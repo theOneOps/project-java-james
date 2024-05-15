@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 
 public class Employee implements Serializable {
 
@@ -15,8 +16,13 @@ public class Employee implements Serializable {
     Employee()
     {}
 
-    Employee(String name, String prename, String StartingHour, String EndingHour)
-    {}
+    public Employee(String name, String prename, String StartingHour, String EndingHour)
+    {
+        empName = name;
+        empPrename = prename;
+        startingHour = String.valueOf(LocalTime.parse(StartingHour));
+        endingHour = String.valueOf(LocalTime.parse(EndingHour));
+    }
 
     public String getUuid() {
         return uuid;
@@ -64,5 +70,17 @@ public class Employee implements Serializable {
 
     public void setWorkHour(WorkHour workHour) {
         this.workHour = workHour;
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format(
+                "employeeUUID %s "+
+                        "employeeName %s " +
+                        "employeePrename %s " +
+                        "employeeStartingHour %s " +
+                        "employeeEndingHour %s " +
+                        "emloyeeWorkhour %s \n",uuid, empName, empPrename, startingHour, endingHour, workHour);
     }
 }
