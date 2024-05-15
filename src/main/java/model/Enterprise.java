@@ -1,8 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Enterprise {
+public class Enterprise implements Serializable {
+    private static final long serialVersionUID = 1L;
     private HashMap<String, Employee> AllEmployees = new HashMap<>();
 
     Enterprise()
