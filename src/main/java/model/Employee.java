@@ -18,6 +18,11 @@ public class Employee implements Serializable {
     Employee(String name, String prename, String StartingHour, String EndingHour)
     {}
 
+    public Employee(String FirstName, String LastName) {
+        this.empName = FirstName;
+        this.empPrename = LastName;
+    }
+
     public String getUuid() {
         return uuid;
     }
