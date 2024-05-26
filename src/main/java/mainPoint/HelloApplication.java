@@ -33,7 +33,6 @@ public class HelloApplication extends Application {
         stage.setTitle("HOME PAGE VIEW");
         stage.setOnCloseRequest(e -> Platform.exit());
         HomePageView homePageView = new HomePageView(stage);
-        homePageView.initializeView();
     }
 
     public static void main(String[] args) {
