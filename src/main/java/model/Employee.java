@@ -1,5 +1,7 @@
 package model;
 
+import model.JobClasses.WorkHour;
+
 import java.io.Serializable;
 
 public class Employee implements Serializable {
