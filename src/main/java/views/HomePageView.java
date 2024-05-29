@@ -1,5 +1,6 @@
 package views;
 
+import controllers.EntrepriseController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -13,7 +14,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.JobClasses.Enterprise;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static java.lang.Thread.sleep;
@@ -29,6 +32,8 @@ public class HomePageView {
     protected GridPane sideBar;                     //custom sideBar
     protected VBox mainContent;                     //custom mainContent
 
+    private final EntrepriseController entrepriseController;
+
     public HomePageView(Stage stage) {
         this.stage = stage;
         this.paramButton = new Button();
@@ -38,6 +43,7 @@ public class HomePageView {
         this.mainPane = new GridPane();
         this.sideBar = new GridPane();
         this.mainContent = new VBox();
+        this.entrepriseController = new EntrepriseController();
         initializeView();
     }
 
@@ -98,13 +104,7 @@ public class HomePageView {
             switchToView(parameterContent);
         });
 
-        comboBox.setOnAction(e -> {
-            EntrepriseView entrepriseView = new EntrepriseView(stage);
-            VBox entrepriseContent = entrepriseView.mainContent;
-            switchToView(entrepriseContent);
-            String selectedItem = (String) comboBox.getValue();
-            System.out.println(selectedItem);
-        });
+
 
         homeButton.setOnAction(e -> {
             System.out.println("homeButton clicked");
@@ -205,6 +205,7 @@ public class HomePageView {
         return sideBar;
     }
 
+
     public void switchToView(VBox newContent) {
         mainPane.getChildren().remove(mainContent);
         mainPane.add(newContent, 1, 0);
@@ -215,20 +216,36 @@ public class HomePageView {
 
 
     public void fillComboBox() {
-        String obj1 = "entreprise1";
-        String obj2 = "entreprise2";
-        String obj3 = "entreprise3";
-        String obj4 = "entreprise4";
-        comboBox.getItems().addAll(obj1, obj2, obj3, obj4);
+        ArrayList<Enterprise> enterprises = getAllEnterprises();
+        for(Enterprise ent : enterprises){
+            comboBox.getItems().add(ent.getEntname());
+        }
+        //set value to first emp name
+        if(!enterprises.isEmpty()) comboBox.setValue(enterprises.getFirst().getEntname());
 
-        // Sélectionner un élément par défaut
-        comboBox.setOnAction(e ->{
+        //Event on click
+        comboBox.setOnAction(e -> {
+            String enterpriseName = (String)comboBox.getValue();
+            //check all enterprises name in array
+            for(Enterprise ent : enterprises){
+                if(ent.getEntname().equals(enterpriseName)){
+                    EntrepriseView entrepriseView = new EntrepriseView(stage, ent);
+                    VBox entrepriseContent = entrepriseView.mainContent;
+                    switchToView(entrepriseContent);
+                    System.out.println("selected enterprise : " + ent);
+                    break;
+                }
+            }
 
         });
+
 
         // Créer une VBox pour contenir le ComboBox
         VBox vBox = new VBox(comboBox);
         vBox.setSpacing(10);
+    }
 
+    public ArrayList<Enterprise> getAllEnterprises(){
+        return entrepriseController.getAllEntreprises();
     }
 }

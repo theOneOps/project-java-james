@@ -6,6 +6,9 @@ module com.example.demo1 {
 
     opens model to javafx.fxml;
     exports model;
+    exports mainPoint;
+    exports views;
+    exports controllers;
 
 
 }

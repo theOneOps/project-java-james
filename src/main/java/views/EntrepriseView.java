@@ -1,5 +1,6 @@
 package views;
 
+import controllers.EntrepriseController;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,14 +10,19 @@ import javafx.scene.control.Separator;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.JobClasses.Enterprise;
 
 
 import javafx.scene.text.Font;
 
+
 public class EntrepriseView extends HomePageView {
 
-    public EntrepriseView(Stage stage) {
+    private Enterprise enterprise;
+
+    public EntrepriseView(Stage stage, Enterprise enterprise) {
         super(stage);
+        this.enterprise = enterprise;
         stage.setTitle("Entreprise View");
         initializeMainContent();
     }
@@ -208,5 +214,6 @@ public class EntrepriseView extends HomePageView {
         finalBox.getChildren().add(gridPane);
         switchToView(finalBox);
     }
+
 
 }
