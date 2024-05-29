@@ -23,11 +23,13 @@ public class EntrepriseView extends HomePageView {
     public EntrepriseView(Stage stage, Enterprise enterprise) {
         super(stage);
         this.enterprise = enterprise;
-        stage.setTitle("Entreprise View");
+        stage.setTitle(enterprise.getEntname() + "View");
         initializeMainContent();
     }
 
     public void initializeMainContent() {
+        comboBox.setValue(enterprise.getEntname());
+
         paramButton.setOnAction(e -> {
             ParameterView parameterView = new ParameterView(stage);
             VBox vBox = parameterView.mainContent;
