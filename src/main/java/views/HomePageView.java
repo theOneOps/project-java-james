@@ -1,21 +1,27 @@
 package views;
 
 import controllers.EntrepriseController;
+import controllers.HomePageController;
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -26,14 +32,30 @@ public class HomePageView {
     protected Stage stage;                          //stage of the app.
     protected Button paramButton;                   //custom parameter button
     protected Button homeButton;                    //custom home button
-    protected TableView<Objects> tableView;         //table view changing content depending on the view instantiation
+    protected TableView<Employee> tableView;         //table view changing content depending on the view instantiation
     protected ComboBox<String> comboBox;            //all entreprises
     protected GridPane mainPane;                    //use to separate app in 2, first part for sideBar(1/5), second for mainContent(4/5)
     protected GridPane sideBar;                     //custom sideBar
     protected VBox mainContent;                     //custom mainContent
-
+    protected HomePageController homePageController;
+    private ObservableList<Employee> observableEmployee;
     private final EntrepriseController entrepriseController;
 
+    public HomePageView(Stage stage, ObservableList<Employee> observableEmployee) {
+        this.stage = stage;
+        this.paramButton = new Button();
+        this.homeButton = new Button();
+        this.tableView = new TableView<>();
+        this.comboBox = new ComboBox<>();
+        this.mainPane = new GridPane();
+        this.sideBar = new GridPane();
+        this.mainContent = new VBox();
+        this.entrepriseController = new EntrepriseController();
+        this.homePageController = new HomePageController();
+        this.observableEmployee = observableEmployee;
+        tableView.setItems(observableEmployee);
+        initializeView();
+    }
     public HomePageView(Stage stage) {
         this.stage = stage;
         this.paramButton = new Button();
@@ -44,6 +66,26 @@ public class HomePageView {
         this.sideBar = new GridPane();
         this.mainContent = new VBox();
         this.entrepriseController = new EntrepriseController();
+        this.homePageController = new HomePageController();
+        initializeView();
+    }
+
+    public HomePageView(Stage stage, HomePageController homePageController) {
+        this.stage = stage;
+        this.paramButton = new Button();
+        this.homeButton = new Button();
+        this.tableView = new TableView<>();
+        this.comboBox = new ComboBox<>();
+        this.mainPane = new GridPane();
+        this.sideBar = new GridPane();
+        this.mainContent = new VBox();
+        this.entrepriseController = new EntrepriseController();
+        this.homePageController = homePageController;
+        this.observableEmployee = homePageController.getEmployees();
+        for(Employee emp : this.observableEmployee){
+            System.out.println(emp);
+        }
+        tableView.setItems(observableEmployee);
         initializeView();
     }
 
@@ -52,8 +94,7 @@ public class HomePageView {
         StackPane stackPane = new StackPane();
         stackPane.getChildren().add(mainPane);
         //create scene and add stackPane to it
-        Scene scene = new Scene(stackPane, 800d, 600d);
-
+        Scene scene = new Scene(stackPane, 1000d, 700d);
 
         stage.setScene(scene);
         stage.setTitle("HomePage view");
@@ -71,8 +112,8 @@ public class HomePageView {
         GridPane.clearConstraints(mainPane);
         ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints();
-        col1.setPercentWidth(20); // 1/5 of stage
-        col2.setPercentWidth(80); // 4/5 of stage
+        col1.setPercentWidth(15); // 15% of stage
+        col2.setPercentWidth(85); // 85% of stage
         col1.setHgrow(Priority.ALWAYS);
         col2.setHgrow(Priority.ALWAYS);
 
@@ -99,12 +140,10 @@ public class HomePageView {
         //events
         //on click paramButton to change pane to parameter pane
         paramButton.setOnAction(e -> {
-            ParameterView parameterView = new ParameterView(stage);
+            ParameterView parameterView = new ParameterView(stage, homePageController);
             VBox parameterContent = parameterView.mainContent;
             switchToView(parameterContent);
         });
-
-
 
         homeButton.setOnAction(e -> {
             System.out.println("homeButton clicked");
@@ -125,12 +164,57 @@ public class HomePageView {
         Label label = new Label("Main");
         mainBox.getChildren().addAll(label, tableView);
         VBox.setVgrow(mainBox, Priority.ALWAYS);
+        initializeTableView();
         //margin
         mainBox.setPadding(new Insets(10));
         mainBox.setSpacing(10);
         mainBox.backgroundProperty().setValue(Background.fill(Color.BLUE));
 
         return mainBox;
+    }
+
+    private void initializeTableView() {
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        tableView.setEditable(false);
+        TableColumn<Employee, String> uuidColumn = new TableColumn<>("UUID");
+        uuidColumn.setCellValueFactory(param -> {
+            final Employee employee = param.getValue();
+            return new SimpleStringProperty(employee.getUuid());
+        });
+
+        TableColumn<Employee, String> firstNameCol = new TableColumn<>("First Name");
+        firstNameCol.setCellValueFactory(param -> {
+            final Employee temp = param.getValue();
+            return new SimpleStringProperty(temp.getEmpPrename());
+        });
+
+        TableColumn<Employee, String> lastNameCol = new TableColumn<>("Last Name");
+        lastNameCol.setCellValueFactory(param -> {
+            final Employee temp = param.getValue();
+            return new SimpleStringProperty(temp.getEmpName());
+        });
+
+        TableColumn<Employee, String> arrivalTime = new TableColumn<>("arrival time");
+        arrivalTime.setCellValueFactory(param -> {
+            final Employee employee = param.getValue();
+            return new SimpleStringProperty(employee.getStartingHour());
+        });
+
+        TableColumn<Employee, String> departureTime = new TableColumn<>("departure time");
+        departureTime.setCellValueFactory(param -> {
+            final Employee employee = param.getValue();
+            return new SimpleStringProperty(employee.getEndingHour());
+        });
+
+        TableColumn<Employee, String> lastRegisterColumn = new TableColumn<>("last register");
+        lastRegisterColumn.setCellValueFactory(param -> {
+            final Employee employee = param.getValue();
+            return new SimpleStringProperty(String.valueOf(employee.getWorkHour().getLastPointing()));
+        });
+
+        // Ajouter les colonnes à la TableView
+        tableView.getColumns().addAll(uuidColumn, firstNameCol, lastNameCol, arrivalTime, departureTime, lastRegisterColumn);
+       // tableView.setItems(observableEmployee);
     }
 
     /**
@@ -229,7 +313,7 @@ public class HomePageView {
             //check all enterprises name in array
             for(Enterprise ent : enterprises){
                 if(ent.getEntname().equals(enterpriseName)){
-                    EntrepriseView entrepriseView = new EntrepriseView(stage, ent);
+                    EntrepriseView entrepriseView = new EntrepriseView(stage, ent, homePageController);
                     VBox entrepriseContent = entrepriseView.mainContent;
                     switchToView(entrepriseContent);
                     System.out.println("selected enterprise : " + ent);

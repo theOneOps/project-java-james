@@ -1,6 +1,7 @@
 package views;
 
 import controllers.EntrepriseController;
+import controllers.HomePageController;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,8 +21,8 @@ public class EntrepriseView extends HomePageView {
 
     private Enterprise enterprise;
 
-    public EntrepriseView(Stage stage, Enterprise enterprise) {
-        super(stage);
+    public EntrepriseView(Stage stage, Enterprise enterprise, HomePageController controller) {
+        super(stage, controller);
         this.enterprise = enterprise;
         stage.setTitle(enterprise.getEntname() + "View");
         initializeMainContent();
@@ -31,12 +32,13 @@ public class EntrepriseView extends HomePageView {
         comboBox.setValue(enterprise.getEntname());
 
         paramButton.setOnAction(e -> {
-            ParameterView parameterView = new ParameterView(stage);
+            ParameterView parameterView = new ParameterView(stage, homePageController);
             VBox vBox = parameterView.mainContent;
             switchToView(vBox);
         });
         homeButton.setOnAction(e -> {
-            HomePageView homePageView = new HomePageView(stage);
+            HomePageView homePageView = new HomePageView(stage, homePageController);
+            if( homePageController.getEmployees().isEmpty()) System.out.println("vide ");
             VBox vBox = homePageView.mainContent;
             homePageView.switchToView(vBox);
             System.out.println("homeButton dans entreprise view");
