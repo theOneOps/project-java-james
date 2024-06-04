@@ -1,4 +1,8 @@
 package views;
 
-public class EmployeeView {
+import model.JobClasses.Employee;
+
+public class EmployeeView extends HomePageView{
+    private Employee employee;
+
 }
