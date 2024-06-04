@@ -7,6 +7,7 @@ import model.JobClasses.Enterprise;
 public class EntrepriseController {
      public EntrepriseController(){}
 
+
     /**
      * static for now -> get real entreprises later
      * @return all entreprises

@@ -21,6 +21,7 @@ public class EntrepriseView extends HomePageView {
 
     private Enterprise enterprise;
 
+
     public EntrepriseView(Stage stage, Enterprise enterprise, HomePageController controller) {
         super(stage, controller);
         this.enterprise = enterprise;
@@ -30,7 +31,6 @@ public class EntrepriseView extends HomePageView {
 
     public void initializeMainContent() {
         comboBox.setValue(enterprise.getEntname());
-
         paramButton.setOnAction(e -> {
             ParameterView parameterView = new ParameterView(stage, homePageController);
             VBox vBox = parameterView.mainContent;
