@@ -342,7 +342,7 @@ public class HomePageView {
     }
 
     public ArrayList<Enterprise> getAllEnterprises(){
-        return entrepriseController.getAllEntreprises();
+        return homePageController.getEnterprises();
     }
 
     public ArrayList<Employee> searchEmployeeByName(String name){

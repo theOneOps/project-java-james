@@ -15,10 +15,16 @@ import java.util.*;
 
 
 public class HomePageController {
-
+    private ArrayList<Enterprise> enterprises;
     private ObservableList<Employee> employees;
 
-    public HomePageController(){}
+    public HomePageController(){
+        this.enterprises = new ArrayList<>();
+    }
+
+    public ArrayList<Enterprise> getEnterprises() {
+        return enterprises;
+    }
 
     public void setEmployees() {
         this.employees  = FXCollections.observableArrayList(generateEmployees());
@@ -39,6 +45,7 @@ public class HomePageController {
                     emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.now());
                     e.addEmployee(emp);
 
+
                 }else {
                     Employee emp = new Employee("nom"+i*j, "prenom"+i*j, "10:15:45", "17:15:45", "dept"+i);
                     emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.now());
@@ -51,7 +58,11 @@ public class HomePageController {
         //TODO : change to backend function instead of static content.
         // HashMap<String, Enterprise> enterprise = ds.getAllEnterprises();
         ArrayList<Employee> recentRegistersEmployee = new ArrayList<>();
+        int i=0;
         for(Enterprise e : enterprise.values()){
+            e.setEntname("Entreprise " + i );
+            i++;
+            enterprises.add(e);
             HashMap<String, Employee> employees = e.getEmployees();
             recentRegistersEmployee.addAll(employees.values());
         }
