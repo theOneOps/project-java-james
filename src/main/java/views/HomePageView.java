@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -21,6 +22,7 @@ import javafx.stage.Stage;
 import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
 
+import javax.swing.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -37,6 +39,7 @@ public class HomePageView {
     protected GridPane mainPane;                    //use to separate app in 2, first part for sideBar(1/5), second for mainContent(4/5)
     protected GridPane sideBar;                     //custom sideBar
     protected VBox mainContent;                     //custom mainContent
+    protected TextField searchField;
     protected HomePageController homePageController;
     private ObservableList<Employee> observableEmployee;
     private final EntrepriseController entrepriseController;
@@ -50,23 +53,11 @@ public class HomePageView {
         this.mainPane = new GridPane();
         this.sideBar = new GridPane();
         this.mainContent = new VBox();
+        this.searchField = new TextField();
         this.entrepriseController = new EntrepriseController();
         this.homePageController = new HomePageController();
         this.observableEmployee = observableEmployee;
         tableView.setItems(observableEmployee);
-        initializeView();
-    }
-    public HomePageView(Stage stage) {
-        this.stage = stage;
-        this.paramButton = new Button();
-        this.homeButton = new Button();
-        this.tableView = new TableView<>();
-        this.comboBox = new ComboBox<>();
-        this.mainPane = new GridPane();
-        this.sideBar = new GridPane();
-        this.mainContent = new VBox();
-        this.entrepriseController = new EntrepriseController();
-        this.homePageController = new HomePageController();
         initializeView();
     }
 
@@ -79,6 +70,7 @@ public class HomePageView {
         this.mainPane = new GridPane();
         this.sideBar = new GridPane();
         this.mainContent = new VBox();
+        this.searchField = new TextField();
         this.entrepriseController = new EntrepriseController();
         this.homePageController = homePageController;
         this.observableEmployee = homePageController.getEmployees();
@@ -148,6 +140,8 @@ public class HomePageView {
         homeButton.setOnAction(e -> {
             System.out.println("homeButton clicked");
         });
+
+
     }
 
     /**
@@ -162,8 +156,26 @@ public class HomePageView {
         mainBox.minWidth(600);
         VBox.setVgrow(tableView, Priority.ALWAYS);
         Label label = new Label("Main");
-        mainBox.getChildren().addAll(label, tableView);
+        //TODO : ajouter textfield a la place de label
+        mainBox.getChildren().addAll( label, tableView);
         VBox.setVgrow(mainBox, Priority.ALWAYS);
+        searchField.setText("search emp by name/prename");
+        searchField.setOnAction(event ->{
+            String text = searchField.getText();
+            ArrayList<Employee> emps = searchEMployeeByPreName(text);
+            if(! emps.isEmpty()){
+                System.out.println("TROUV2 : ");
+                reloadTableview(emps);
+
+            }else{
+                emps = searchEmployeeByName(text);
+                if(!emps.isEmpty()){
+                    System.out.println("TROUV2 : ");
+                    reloadTableview(emps);
+                }
+            }
+        });
+        mainBox.getChildren().add(searchField);
         initializeTableView();
         //margin
         mainBox.setPadding(new Insets(10));
@@ -332,4 +344,17 @@ public class HomePageView {
     public ArrayList<Enterprise> getAllEnterprises(){
         return entrepriseController.getAllEntreprises();
     }
+
+    public ArrayList<Employee> searchEmployeeByName(String name){
+        return homePageController.searchEmployeeByName(name);
+    };
+
+    public ArrayList<Employee> searchEMployeeByPreName(String prename){
+        return homePageController.searchEmployeeByPreName(prename);
+    }
+
+    public void reloadTableview(ArrayList<Employee>emps){
+        tableView.setItems( FXCollections.observableArrayList(emps));
+    }
 }
+

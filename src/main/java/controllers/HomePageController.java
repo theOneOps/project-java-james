@@ -58,4 +58,35 @@ public class HomePageController {
         recentRegistersEmployee.sort(new EmployeComparator());
         return recentRegistersEmployee;
     }
+
+    /**
+     * search all employee with this name  in all employee
+     * @param name
+     * @return employee if found else null
+     */
+    public ArrayList<Employee> searchEmployeeByName(String name){
+        //TODO  : change to backend functions instead of static content;
+        //static content :
+        ArrayList<Employee> result = new ArrayList<>();
+        for(Employee e : employees){
+            if(Objects.equals(e.getEmpName(), name)) result.add(e);
+        }
+        return result;
+    }
+
+    /**
+     * search all employee with this preName in all employee
+     * @param prename
+     * @return employee if found else null
+     */
+    public ArrayList<Employee> searchEmployeeByPreName(String prename){
+        //TODO  : change to backend functions instead of static content;
+        //static content :
+        ArrayList<Employee> result = new ArrayList<>();
+        for(Employee e : employees){
+            if(Objects.equals(e.getEmpPrename(), prename)) result.add(e);
+        }
+        return result;
+
+    }
 }
