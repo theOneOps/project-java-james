@@ -2,31 +2,46 @@ package views;
 
 import controllers.EntrepriseController;
 import controllers.HomePageController;
+
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import model.JobClasses.Enterprise;
 
 
 import javafx.scene.text.Font;
 
+import model.JobClasses.Employee;
+
+import controllers.EmployeeController;
 
 public class EntrepriseView extends HomePageView {
 
     private Enterprise enterprise;
+    private final EmployeeController employeeController;
 
     public EntrepriseView(Stage stage, Enterprise enterprise, HomePageController controller) {
         super(stage, controller);
         this.enterprise = enterprise;
+        this.employeeController = new EmployeeController();
         stage.setTitle(enterprise.getEntname() + "View");
+
         initializeMainContent();
     }
+
+    /*public EntrepriseView(Stage stage) {
+        super(stage);
+        this.employeeController = new EmployeeController();
+        stage.setTitle("Entreprise View");
+
+        initializeMainContent();
+    }*/
 
     public void initializeMainContent() {
         comboBox.setValue(enterprise.getEntname());
@@ -63,11 +78,35 @@ public class EntrepriseView extends HomePageView {
         HBox midBox = new HBox(6);
         // TableView
 
+        TableView<Employee> tableView = new TableView<>();
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        tableView.getItems().setAll(this.employeeController.takeEmploye());
+
+        final TableColumn<Employee, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(param -> {
+            final Employee employee = param.getValue();
+            return new SimpleStringProperty(employee.getEmpName());
+        });
+
+        final TableColumn<Employee, String> prenameCol = new TableColumn<>("Prename");
+        prenameCol.setCellValueFactory(param -> {
+            final Employee employee = param.getValue();
+            return new SimpleStringProperty(employee.getEmpPrename());
+        });
+
+        final TableColumn<Employee, String> uuid = new TableColumn<>("UUID");
+        uuid.setCellValueFactory(param -> {
+            final Employee employee = param.getValue();
+            return new SimpleStringProperty(employee.getUuid());
+        });
+
+        tableView.getColumns().setAll(nameCol, prenameCol, uuid);
+
         // Person Detail
         GridPane detailBox = new GridPane();
 
         double rowDetailSize = (double) 70/6;
-        System.out.println(rowDetailSize);
+        //System.out.println(rowDetailSize);
         RowConstraints rowDetail1 = new RowConstraints();
         rowDetail1.setPercentHeight(rowDetailSize);
         RowConstraints rowDetail2 = new RowConstraints();
@@ -96,8 +135,12 @@ public class EntrepriseView extends HomePageView {
         Label subTitle = new Label("Person Details");
         subTitle.setFont(titleFront);
 
-        Label name = new Label("Name"); Label nameVarText = new Label("...");
-        name.setFont(text); nameVarText.setFont(text);
+        Label name = new Label("Name");
+        name.setFont(text);
+        TextArea nameVarText = new TextArea();
+        nameVarText.setFont(text);
+        nameVarText.setMaxWidth(200);
+        nameVarText.setMinHeight(25);
 
         Label prename = new Label("Prename"); Label prenameVarText = new Label("...");
         prename.setFont(text); prenameVarText.setFont(text);
@@ -115,6 +158,7 @@ public class EntrepriseView extends HomePageView {
         Label workHourEndVarText = new Label("...");
         workHourEndVarText.setFont(text);
 
+        Button workHourBtn = new Button("View Work Hour");
         Button editBtn = new Button("Edit");
 
         // Put Element into Grid
@@ -162,18 +206,21 @@ public class EntrepriseView extends HomePageView {
         GridPane.setColumnIndex(workHourEndVarText, 1);
         GridPane.setHalignment(workHourEndVarText, HPos.LEFT);
 
+        GridPane.setRowIndex(workHourBtn, 6);
+        GridPane.setColumnIndex(workHourBtn, 0);
+        GridPane.setHalignment(workHourBtn, HPos.LEFT);
+
         GridPane.setRowIndex(editBtn, 6);
         GridPane.setColumnIndex(editBtn, 1);
         GridPane.setHalignment(editBtn, HPos.LEFT);
 
         detailBox.getChildren().addAll(subTitle, name, nameVarText, prename,
                 prenameVarText, job, jobVarText, workHourStart, workHourStartVarText,
-                workHourEnd, workHourEndVarText, editBtn);
+                workHourEnd, workHourEndVarText, workHourBtn, editBtn);
 
         // Add grid into midBox
-        midBox.getChildren().addAll(detailBox);
-
-
+        midBox.setAlignment(Pos.CENTER);
+        midBox.getChildren().addAll(tableView, detailBox);
 
         // MAIN GRID
         GridPane gridPane = new GridPane();
@@ -210,6 +257,51 @@ public class EntrepriseView extends HomePageView {
         GridPane.setColumnSpan(midBox, 3);
         GridPane.setHalignment(midBox, HPos.RIGHT);
 
+        /*
+        * Popup avec tableau pour afficher tous les pointages d'un employé
+        * */
+        Popup popup = new Popup();
+        VBox boxPopup = new VBox(6);
+        boxPopup.setAlignment(Pos.CENTER);
+        boxPopup.setStyle(" -fx-background-color: white;");
+        boxPopup.setMinWidth(550);
+        boxPopup.setMinHeight(250);
+        // Table view
+        TableView<Employee> table = new TableView<>();
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        table.getItems().setAll(this.employeeController.takeEmploye());
+
+        final TableColumn<Employee, String> pointage = new TableColumn<>("Pointage");
+        pointage.setCellValueFactory(param -> {
+            final Employee employee = param.getValue();
+            return new SimpleStringProperty(employee.getEmpName());
+        });
+
+        table.getColumns().setAll(pointage);
+
+        Button quitBtn = new Button("Quit");
+        boxPopup.getChildren().addAll(table, quitBtn);
+        popup.getContent().add(boxPopup);
+
+        /*- Event -*/
+        // Event Table View
+        tableView.setOnMouseClicked(e -> {
+            if (tableView.getSelectionModel().getSelectedItem() != null) {
+                nameVarText.setText(tableView.getSelectionModel().getSelectedItem().getEmpName());
+                prenameVarText.setText(tableView.getSelectionModel().getSelectedItem().getEmpPrename());
+                workHourStartVarText.setText(tableView.getSelectionModel().getSelectedItem().getStartingHour());
+                workHourEndVarText.setText(tableView.getSelectionModel().getSelectedItem().getEndingHour());
+            }
+        });
+
+        workHourBtn.setOnAction(e -> {
+            if (!popup.isShowing()) popup.show(stage);
+            else popup.hide();
+        });
+
+        quitBtn.setOnAction(e -> {
+            popup.hide();
+        });
 
         // Add element into grid
         gridPane.getChildren().addAll(topBox, midBox);

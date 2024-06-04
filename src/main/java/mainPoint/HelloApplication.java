@@ -3,19 +3,14 @@ package mainPoint;
 import controllers.HomePageController;
 import javafx.application.Application;
 import javafx.application.Platform;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import model.JobClasses.Employee;
@@ -24,6 +19,10 @@ import views.HomePageView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import views.HomePageView;
+
+import java.io.IOException;
 
 import static java.lang.Thread.sleep;
 
