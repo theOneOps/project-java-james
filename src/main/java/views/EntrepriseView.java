@@ -36,14 +36,6 @@ public class EntrepriseView extends HomePageView {
         initializeMainContent();
     }
 
-    /*public EntrepriseView(Stage stage) {
-        super(stage);
-        this.employeeController = new EmployeeController();
-        stage.setTitle("Entreprise View");
-
-        initializeMainContent();
-    }*/
-
     public void initializeMainContent() {
         comboBox.setValue(enterprise.getEntname());
         paramButton.setOnAction(e -> {
@@ -271,6 +263,7 @@ public class EntrepriseView extends HomePageView {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         table.getItems().setAll(this.employeeController.takeEmploye());
 
+
         final TableColumn<Employee, String> pointage = new TableColumn<>("Pointage");
         pointage.setCellValueFactory(param -> {
             final Employee employee = param.getValue();
@@ -303,6 +296,10 @@ public class EntrepriseView extends HomePageView {
             popup.hide();
         });
 
+        editBtn.setOnAction(e -> {
+            System.out.println(nameVarText.getText());
+        });
+
         // Add element into grid
         gridPane.getChildren().addAll(topBox, midBox);
         VBox finalBox = new VBox();
@@ -311,5 +308,8 @@ public class EntrepriseView extends HomePageView {
         switchToView(finalBox);
     }
 
+    /*public void initializeTableView() {
+
+    }*/
 
 }
