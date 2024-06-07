@@ -1,5 +1,6 @@
 package controllers;
 
+import model.JobClasses.Employee;
 import views.EntrepriseView;
 import java.util.ArrayList;
 import model.JobClasses.Enterprise;
@@ -19,4 +20,5 @@ public class EntrepriseController {
         }
         return entreprises;
     }
+
 }

@@ -10,6 +10,7 @@ import views.HomePageView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.TemporalAmount;
 import java.util.*;
 
 
@@ -43,12 +44,16 @@ public class HomePageController {
                 if(i == 0){
                     Employee emp = new Employee("nom"+i+j, "prenom"+i+j, "10:15:45", "17:15:45", "dept"+i);
                     emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.now());
+                    emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.MIN);
+                    emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.of(2, 45, 28));
                     e.addEmployee(emp);
 
 
                 }else {
                     Employee emp = new Employee("nom"+i*j, "prenom"+i*j, "10:15:45", "17:15:45", "dept"+i);
                     emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.now());
+                    emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.of(16, 25, 3));
+                    emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.MIN);
                     e.addEmployee(emp);
 
                 }
