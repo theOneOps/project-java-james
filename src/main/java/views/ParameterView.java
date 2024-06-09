@@ -96,7 +96,7 @@ public class ParameterView extends HomePageView {
         });
 
         Label selectedLabel = new Label(String.valueOf(numberOfEmployees.getValue()));
-        GridPane.setConstraints(selectedLabel, 2, 8);
+        GridPane.setConstraints(selectedLabel, 2, 7);
 
         numberOfEmployees.valueProperty().addListener(
                 new ChangeListener<Number>() {
@@ -109,7 +109,7 @@ public class ParameterView extends HomePageView {
 
         // Create Button
         Button createButton = new Button("Create Company and Employees");
-        GridPane.setConstraints(createButton, 1, 7);
+        GridPane.setConstraints(createButton, 1, 8);
 
 
         createButton.setOnAction(e -> {
