@@ -5,9 +5,12 @@ import views.EntrepriseView;
 import java.util.ArrayList;
 import model.JobClasses.Enterprise;
 
+/**
+ * @author Martin
+ * Connection between the back-end and front-end of the application
+ */
 public class EntrepriseController {
      public EntrepriseController(){}
-
 
     /**
      * static for now -> get real entreprises later

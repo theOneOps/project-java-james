@@ -6,16 +6,18 @@ import model.DataSerialize;
 import model.EmployeComparator;
 import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
-import views.HomePageView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.TemporalAmount;
 import java.util.*;
 
 
-
+/**
+ * @author Martin
+ * Connection between the back-end and front-end of the application
+ */
 public class HomePageController {
+    //Todo : remove class's attributs and use backend load. can't do now because no backend/
     private ArrayList<Enterprise> enterprises;
     private ObservableList<Employee> employees;
 
@@ -35,6 +37,10 @@ public class HomePageController {
         return employees;
     }
 
+    /**
+     * Create static content to show in views because back-end not working
+     * @return static enterprises
+     */
     private ArrayList<Employee> generateEmployees(){
         DataSerialize ds = new DataSerialize();
          HashMap<String, Enterprise> enterprise = new HashMap<>();
@@ -61,7 +67,7 @@ public class HomePageController {
             enterprise.put(String.valueOf(i), e);
         }
         //TODO : change to backend function instead of static content.
-        // HashMap<String, Enterprise> enterprise = ds.getAllEnterprises();
+        //HashMap<String, Enterprise> enterprise = ds.getAllEnterprises();
         ArrayList<Employee> recentRegistersEmployee = new ArrayList<>();
         int i=0;
         for(Enterprise e : enterprise.values()){
@@ -97,7 +103,6 @@ public class HomePageController {
      */
     public ArrayList<Employee> searchEmployeeByPreName(String prename){
         //TODO  : change to backend functions instead of static content;
-        //static content :
         ArrayList<Employee> result = new ArrayList<>();
         for(Employee e : employees){
             if(Objects.equals(e.getEmpPrename(), prename)) result.add(e);

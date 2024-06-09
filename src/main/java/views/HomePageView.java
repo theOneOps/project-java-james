@@ -29,37 +29,27 @@ import java.util.Objects;
 
 import static java.lang.Thread.sleep;
 
-
+/**
+ * @author Martin
+ * Main view for mainApp.
+ * it's composed of a SideBar and a mainContent, see {@link #createSideBar()} and {@link #createSideBar()}
+ * To see how elements are placed look {@link #initializeView()}
+ * when a view change is needed, only the main content is replaced {@link #switchToView(VBox)}
+ */
 public class HomePageView {
-    protected Stage stage;                          //stage of the app.
-    protected Button paramButton;                   //custom parameter button
-    protected Button homeButton;                    //custom home button
-    protected TableView<Employee> tableView;         //table view changing content depending on the view instantiation
-    protected ComboBox<String> comboBox;            //all entreprises
-    protected GridPane mainPane;                    //use to separate app in 2, first part for sideBar(1/5), second for mainContent(4/5)
-    protected GridPane sideBar;                     //custom sideBar
-    protected VBox mainContent;                     //custom mainContent
-    protected TextField searchField;
-    protected HomePageController homePageController;
-    private ObservableList<Employee> observableEmployee;
+    protected Stage stage;                              //stage of the app.
+    protected Button paramButton;                       //custom parameter button
+    protected Button homeButton;                        //custom home button
+    protected TableView<Employee> tableView;            //table view changing content depending on the view instantiation
+    protected ComboBox<String> comboBox;                //all entreprises
+    protected GridPane mainPane;                        //use to separate app in 2, first part for sideBar(1/5), second for mainContent(4/5)
+    protected GridPane sideBar;                         //custom sideBar
+    protected VBox mainContent;                         //custom mainContent
+    protected TextField searchField;                    //custom search field
+    protected HomePageController homePageController;    //controller for home^Page
+    private ObservableList<Employee> observableEmployee;//all employees in an observable list to put in the tableView
     private final EntrepriseController entrepriseController;
 
-    public HomePageView(Stage stage, ObservableList<Employee> observableEmployee) {
-        this.stage = stage;
-        this.paramButton = new Button();
-        this.homeButton = new Button();
-        this.tableView = new TableView<>();
-        this.comboBox = new ComboBox<>();
-        this.mainPane = new GridPane();
-        this.sideBar = new GridPane();
-        this.mainContent = new VBox();
-        this.searchField = new TextField();
-        this.entrepriseController = new EntrepriseController();
-        this.homePageController = new HomePageController();
-        this.observableEmployee = observableEmployee;
-        tableView.setItems(observableEmployee);
-        initializeView();
-    }
 
     public HomePageView(Stage stage, HomePageController homePageController) {
         this.stage = stage;
@@ -81,6 +71,9 @@ public class HomePageView {
         initializeView();
     }
 
+    /**
+     *  Initialize all elements and put them in a specific order on the stage
+     */
     public void initializeView() {
         //use stack pane to have multiple scene in the same stage.
         StackPane stackPane = new StackPane();
@@ -96,6 +89,7 @@ public class HomePageView {
         createParameterButton();
         createHomeButton();
 
+        //add padding and margin to the mainPain
         mainPane.setHgap(10);
         mainPane.setVgap(10);
         mainPane.setStyle("-fx-padding: 10;");
@@ -110,44 +104,29 @@ public class HomePageView {
         col2.setHgrow(Priority.ALWAYS);
 
         mainPane.backgroundProperty().setValue(Background.fill(Color.GREEN));
-
-        mainPane.getColumnConstraints().addAll(col1, col2);
-        mainPane.setHgap(10);
-        mainPane.setVgap(10);
-
-        mainPane.add(sideBar, 0, 0);
-        mainPane.add(mainContent, 1, 0);
-
         mainPane.backgroundProperty().setValue(Background.fill(Color.RED));
 
+        mainPane.getColumnConstraints().addAll(col1, col2);
+
+        //add sideBar on the first column of the grid
+        mainPane.add(sideBar, 0, 0);
+        //add mainContent on the second column of the grid
+        mainPane.add(mainContent, 1, 0);
+
+        //Configures interface layout to allow maximum expansion of elements inside the grid.
         GridPane.setHgrow(sideBar, Priority.ALWAYS);
         GridPane.setVgrow(sideBar, Priority.ALWAYS);
         GridPane.setHgrow(mainContent, Priority.ALWAYS);
         GridPane.setVgrow(mainContent, Priority.ALWAYS);
         VBox.setVgrow(tableView, Priority.ALWAYS);
+
+        //show the interface
         switchToView(mainContent);
-
         stage.show();
-
-        //events
-        //on click paramButton to change pane to parameter pane
-        paramButton.setOnAction(e -> {
-            ParameterView parameterView = new ParameterView(stage, homePageController);
-            VBox parameterContent = parameterView.mainContent;
-            switchToView(parameterContent);
-        });
-
-        homeButton.setOnAction(e -> {
-            ArrayList<Employee> emps = new ArrayList<>(observableEmployee);
-            reloadTableview(emps);
-        });
-
-
     }
 
     /**
      * Create VBox for the main page with table view
-     *
      * @return VBox with main content
      */
     public VBox createMainContent() {
@@ -156,35 +135,28 @@ public class HomePageView {
         VBox mainBox = new VBox();
         mainBox.minWidth(600);
         VBox.setVgrow(tableView, Priority.ALWAYS);
-        searchField.setPromptText("search emp by name/prename");
-        mainBox.getChildren().addAll(searchField, tableView);
         VBox.setVgrow(mainBox, Priority.ALWAYS);
-        //event 1 : search when enter button pressed
-        searchField.setOnAction(event ->{
-            String text = searchField.getText();
-            ArrayList<Employee> emps = searchEMployeeByPreName(text);
-            if(! emps.isEmpty()){
-                reloadTableview(emps);
 
-            }else{
-                emps = searchEmployeeByName(text);
-                if(!emps.isEmpty()){
-                    reloadTableview(emps);
-                }
-            }
-        });
-
+        createSearchField();
         initializeTableView();
-        //margin
+        mainBox.getChildren().addAll(searchField, tableView);
+
+        //margin and padding
         mainBox.setPadding(new Insets(10));
         mainBox.setSpacing(10);
         mainBox.backgroundProperty().setValue(Background.fill(Color.BLUE));
         return mainBox;
     }
 
+    /**
+     * Initialize the tableVIew and its content
+     */
     private void initializeTableView() {
+        // set ColumnResizePolicy to allow maximum column width expansion
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        // no edition of the colummn
         tableView.setEditable(false);
+
         TableColumn<Employee, String> uuidColumn = new TableColumn<>("UUID");
         uuidColumn.setCellValueFactory(param -> {
             final Employee employee = param.getValue();
@@ -221,13 +193,13 @@ public class HomePageView {
             return new SimpleStringProperty(String.valueOf(employee.getWorkHour().getLastPointing()));
         });
 
-        // Ajouter les colonnes à la TableView
+        //add all columns to the tableVIew
         tableView.getColumns().addAll(uuidColumn, firstNameCol, lastNameCol, arrivalTime, departureTime, lastRegisterColumn);
-       // tableView.setItems(observableEmployee);
+
     }
 
     /**
-     * Create parameter button
+     * Create parameter button and its events
      */
     public void createParameterButton() {
         //padding to button
@@ -240,9 +212,18 @@ public class HomePageView {
         //remove button frame
         this.paramButton.setPadding(Insets.EMPTY);
         this.paramButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+        //on click paramButton to change pane to parameter pane
+        paramButton.setOnAction(e -> {
+            ParameterView parameterView = new ParameterView(stage, homePageController);
+            VBox parameterContent = parameterView.mainContent;
+            switchToView(parameterContent);
+        });
 
     }
 
+    /**
+     * Create homeButton and its events
+     */
     private void createHomeButton() {
         //padding to button
         this.homeButton.setPadding(new javafx.geometry.Insets(10, 10, 10, 10));
@@ -255,22 +236,21 @@ public class HomePageView {
         this.homeButton.setPadding(Insets.EMPTY);
         this.homeButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
 
-        // Add action
-        this.homeButton.setOnAction(e -> {
-            // Define what should happen when homeButton is clicked
-            System.out.println("Home button clicked!");
+        //event of button
+        homeButton.setOnAction(e -> {
+            ArrayList<Employee> emps = new ArrayList<>(observableEmployee);
+            reloadTableview(emps);
         });
     }
 
     /**
      * Create sideBar
-     *
-     * @return
+     * @return sideBar
      */
     public GridPane createSideBar() {
         //def SideBar
         GridPane sideBar = new GridPane();
-        //home button
+        //constraint
         RowConstraints row0 = new RowConstraints();
         row0.setVgrow(Priority.ALWAYS);
         row0.setPercentHeight(20);  // 1/5 height
@@ -285,7 +265,7 @@ public class HomePageView {
         row2.setPercentHeight(20);  // 1/5 height
 
         sideBar.getRowConstraints().addAll(row0, row1, row2);
-
+        //home button
         homeButton.setPadding(new Insets(10, 10, 10, 10));
         //center content GirdPane
         sideBar.setAlignment(Pos.TOP_CENTER);
@@ -298,7 +278,10 @@ public class HomePageView {
         return sideBar;
     }
 
-
+    /**
+     *  remplace the mainContent VBox to a newContent VBox. used to switch between views
+     * @param newContent
+     */
     public void switchToView(VBox newContent) {
         mainPane.getChildren().remove(mainContent);
         mainPane.add(newContent, 1, 0);
@@ -307,7 +290,9 @@ public class HomePageView {
         GridPane.setVgrow(mainContent, Priority.ALWAYS);
     }
 
-
+    /**
+     * Fill the combobox with all enterprises and set event
+     */
     public void fillComboBox() {
         ArrayList<Enterprise> enterprises = getAllEnterprises();
         for(Enterprise ent : enterprises){
@@ -332,24 +317,66 @@ public class HomePageView {
 
         });
 
-
-        // Créer une VBox pour contenir le ComboBox
+        // create vBox to contain ComboBox
         VBox vBox = new VBox(comboBox);
         vBox.setSpacing(10);
     }
 
+    /**
+     * Create the searchField and its event
+     * @return searchField
+     */
+    public TextField createSearchField(){
+        searchField.setPromptText("search emp by name/prename");
+        //event
+        //search when enter button pressed
+        searchField.setOnAction(event ->{
+            String text = searchField.getText();
+            ArrayList<Employee> emps = searchEMployeeByPreName(text);
+            if(! emps.isEmpty()){
+                //first search by preName
+                reloadTableview(emps);
+
+            }else{
+                //second search by name
+                emps = searchEmployeeByName(text);
+                if(!emps.isEmpty()){
+                    reloadTableview(emps);
+                }
+            }
+        });
+        return searchField;
+    }
+    /**
+     * Call Controller function to get all enterprises
+     * @return all enterprises
+     */
     public ArrayList<Enterprise> getAllEnterprises(){
         return homePageController.getEnterprises();
     }
 
+    /**
+     * Call Controller function to search employees by name
+     * @param name
+     * @return found employees
+     */
     public ArrayList<Employee> searchEmployeeByName(String name){
         return homePageController.searchEmployeeByName(name);
     };
 
+    /**
+     Call Controller function to search employees by pre name
+     * @param prename
+     * @return found employees
+     */
     public ArrayList<Employee> searchEMployeeByPreName(String prename){
         return homePageController.searchEmployeeByPreName(prename);
     }
 
+    /**
+     * When the employees to show in the tableView are changed, update the content of the tableView
+     * @param emps employees to put inside the tableVIew
+     */
     public void reloadTableview(ArrayList<Employee>emps){
         tableView.setItems( FXCollections.observableArrayList(emps));
     }

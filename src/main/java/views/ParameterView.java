@@ -17,6 +17,12 @@ import javafx.scene.control.Slider;
 
 import javax.swing.*;
 
+/**
+ * @author Martin
+ * Parameter view for mainApp
+ * Used to create enterprises.
+ * {@link #initializeMainContent()}
+ */
 public class ParameterView extends HomePageView {
     private final ParameterController parameterController;
 
@@ -27,8 +33,12 @@ public class ParameterView extends HomePageView {
         initializeMainContent();
     }
 
-
+    /**
+     * Creates new content like a form to create new Entreprises.
+     * The employee information is used as a template to create the fictitious employees
+     */
     public void initializeMainContent() {
+
         VBox vbox = new VBox();
         vbox.backgroundProperty().setValue(Background.fill(Color.YELLOW));
         Label errorLabel = new Label();
@@ -97,7 +107,7 @@ public class ParameterView extends HomePageView {
 
         Label selectedLabel = new Label(String.valueOf(numberOfEmployees.getValue()));
         GridPane.setConstraints(selectedLabel, 2, 7);
-
+        //event on the SlideBar to get its value at any time
         numberOfEmployees.valueProperty().addListener(
                 new ChangeListener<Number>() {
                     @Override
@@ -111,7 +121,7 @@ public class ParameterView extends HomePageView {
         Button createButton = new Button("Create Company and Employees");
         GridPane.setConstraints(createButton, 1, 8);
 
-
+        //event on create button
         createButton.setOnAction(e -> {
             String companyName = companyNameInput.getText();
             String companyPort = portImput.getText();
@@ -120,38 +130,45 @@ public class ParameterView extends HomePageView {
             String startingHour = employeeStartingHourInput.getText();
             String endingHour = employeeEndingHourInput.getText();
             int numberEmployees = (int) numberOfEmployees.getValue();
+
+
             if (companyName.isEmpty() || employeeName.isEmpty() || employeePrename.isEmpty()
                     || startingHour.isEmpty() || endingHour.isEmpty() || companyPort.isEmpty()) {
+                //check if any field is empty
                 errorLabel.setText("Please fill all the fields");
+
             } else if ((!parameterController.checkLocalTimeRegex(startingHour) || !parameterController.checkLocalTimeRegex(endingHour))) {
+                //check if regex on starting/ending hour
                 System.out.println("ERROR PATTERN MATCHING");
                 errorLabel.setText("Please enter a valid time range. (e.g., 17:00:14) ");
             } else {
-                if(!parameterController.createEnterprise(companyName, companyPort, employeeName, employeePrename, startingHour, endingHour, numberEmployees)){
+                //Controller function use try catch -> inform the user if bug occurred
+                if (!parameterController.createEnterprise(companyName, companyPort, employeeName, employeePrename, startingHour, endingHour, numberEmployees)) {
                     errorLabel.setText("ERROR CREATING EMPLOYEES RETRY");
                 }
             }
         });
 
-        grid.getChildren().addAll(companyNameLabel, companyNameInput, portLabel, portImput , titleEmployee,
+        //add all the elements onto the grid
+        grid.getChildren().addAll(companyNameLabel, companyNameInput, portLabel, portImput, titleEmployee,
                 employeeNameLabel, employeeNameInput, employeePrenameLabel, employeePrenameInput,
                 employeeStartingHourLabel, employeeStartingHourInput,
                 employeeEndingHourLabel, employeeEndingHourInput, numberOfEmployeesLabel, numberOfEmployees, selectedLabel, errorLabel, createButton);
 
+        //add grid inside a VBox ( == mainContent)
         vbox.getChildren().addAll(grid, errorLabel);
         switchToView(vbox);
 
+        //Changed events on the sideBar buttons
         paramButton.setOnAction(e -> {
             HomePageView homePageView = new HomePageView(stage, homePageController);
             VBox vBox = homePageView.mainContent;
             homePageView.switchToView(vBox);
-            System.out.println("homeButton dans parameter view : paramButton");
         });
         homeButton.setOnAction(e -> {
             HomePageView homePageView = new HomePageView(stage, homePageController);
             VBox vBox = homePageView.mainContent;
             homePageView.switchToView(vBox);
-            System.out.println("homeButton dans parameter view: homeButton");
         });
     }
 

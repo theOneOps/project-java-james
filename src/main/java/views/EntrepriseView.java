@@ -31,6 +31,12 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * @author Alexandre
+ * Enterprise view for mainApp
+ * Used to show all the employees of an enterperise
+ *
+ */
 public class EntrepriseView extends HomePageView {
 
     private Enterprise enterprise;
@@ -52,6 +58,7 @@ public class EntrepriseView extends HomePageView {
     }
 
     public void initializeMainContent() {
+        //changed events on sidebar's buttons
         comboBox.setValue(enterprise.getEntname());
         paramButton.setOnAction(e -> {
             ParameterView parameterView = new ParameterView(stage, homePageController);
