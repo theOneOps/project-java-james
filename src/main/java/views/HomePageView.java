@@ -138,7 +138,8 @@ public class HomePageView {
         });
 
         homeButton.setOnAction(e -> {
-            System.out.println("homeButton clicked");
+            ArrayList<Employee> emps = new ArrayList<>(observableEmployee);
+            reloadTableview(emps);
         });
 
 
@@ -155,33 +156,29 @@ public class HomePageView {
         VBox mainBox = new VBox();
         mainBox.minWidth(600);
         VBox.setVgrow(tableView, Priority.ALWAYS);
-        Label label = new Label("Main");
-        //TODO : ajouter textfield a la place de label
-        mainBox.getChildren().addAll( label, tableView);
+        searchField.setPromptText("search emp by name/prename");
+        mainBox.getChildren().addAll(searchField, tableView);
         VBox.setVgrow(mainBox, Priority.ALWAYS);
-        searchField.setText("search emp by name/prename");
+        //event 1 : search when enter button pressed
         searchField.setOnAction(event ->{
             String text = searchField.getText();
             ArrayList<Employee> emps = searchEMployeeByPreName(text);
             if(! emps.isEmpty()){
-                System.out.println("TROUV2 : ");
                 reloadTableview(emps);
 
             }else{
                 emps = searchEmployeeByName(text);
                 if(!emps.isEmpty()){
-                    System.out.println("TROUV2 : ");
                     reloadTableview(emps);
                 }
             }
         });
-        mainBox.getChildren().add(searchField);
+
         initializeTableView();
         //margin
         mainBox.setPadding(new Insets(10));
         mainBox.setSpacing(10);
         mainBox.backgroundProperty().setValue(Background.fill(Color.BLUE));
-
         return mainBox;
     }
 

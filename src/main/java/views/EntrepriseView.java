@@ -44,7 +44,7 @@ public class EntrepriseView extends HomePageView {
         super(stage, controller);
         this.enterprise = enterprise;
         this.employeeController = new EmployeeController();
-        stage.setTitle(enterprise.getEntname() + "View");
+        stage.setTitle(enterprise.getEntname() + " View");
 
         // init view
         tableView = new TableView<>();
