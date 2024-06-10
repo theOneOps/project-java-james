@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class DataSerialize {
 
     private HashMap<String, Enterprise> allEnterprises = new HashMap<>();
-    private final String fileText = "data.ser";
+    private String fileText = "data.ser";
 
     public void saveData() throws IOException {
         // save all enterprises
@@ -40,6 +40,8 @@ public class DataSerialize {
         return this.allEnterprises;
     }
 
+    public Enterprise getEntByName(String entName){return allEnterprises.get(entName);}
+
     public void addNewEmployeeToEnterprise(String entName, String empName, String empPrename,
                                            String HourStart, String HourEnd) throws IOException {
         // add employee to enterprise
@@ -59,11 +61,11 @@ public class DataSerialize {
         saveData();
     }
 
-    public void addNewEnterprise(String name, String passwd, String port) throws IOException {
+    public void addNewEnterprise(String name, String port) throws IOException {
         // add new enterprise
         if (!this.allEnterprises.containsKey(name))
         {
-            this.allEnterprises.put(name, new Enterprise(name, passwd, port));
+            this.allEnterprises.put(name, new Enterprise(name, port));
             saveData();
         }
     }
@@ -93,45 +95,64 @@ public class DataSerialize {
         saveData();
     }
 
-    public void addNewWorkHour(String entName, String empId,String dateDay
-                                ,  String hourStart) throws IOException
+    public void addNewWorkHour(String port, String empId,String dateDay
+            ,  String hourStart) throws IOException
     {
-        this.allEnterprises.get(entName).getEmployees()
-                .get(empId).getWorkHour().addWorkHour(LocalDate.parse(dateDay), LocalTime.parse(hourStart));
-        saveData();
+        if (getEnterpriseClassByPort(port)!=null)
+        {
+            String entName = getEnterpriseClassByPort(port).getEntname();
+            if (this.allEnterprises.get(entName).getEmployees()
+                    .get(empId)!=null)
+            {
+                this.allEnterprises.get(entName).getEmployees()
+                        .get(empId).getWorkHour().addWorkHour(LocalDate.parse(dateDay), LocalTime.parse(hourStart));
+                saveData();
+            }
+        }
     }
 
+
     // todo : test this function which allows to modify the time of a workhour for an employee
-    public void modifyTimeWorkHour(String entName, String empId, String dateDay,
+    public void modifyTimeWorkHour(String entPort, String empId, String dateDay,
                                    String olderHour, String newHour) throws IOException
     {
-        this.allEnterprises.get(entName).getEmployees().get(empId)
-                .getWorkHour().changeLocalTime(dateDay, olderHour, newHour);
-
-        saveData();
+        if (getEnterpriseClassByPort(entPort)!=null)
+        {
+            String entName = getEnterpriseClassByPort(entPort).getEntname();
+            this.allEnterprises.get(entName).getEmployees().get(empId)
+                    .getWorkHour().changeLocalTime(dateDay, olderHour, newHour);
+            saveData();
+        }
     }
 
     // todo : test this function which allows to modify the date of a workhour for an employee
-    public void modifyDateWorkHour(String entName, String empId, String olderDate,
+    public void modifyDateWorkHour(String entPort, String empId, String olderDate,
                                    String newDate,String newHour)throws IOException
     {
-        this.allEnterprises.get(entName).getEmployees().get(empId)
-                .getWorkHour().changeDateWorkHour(olderDate, newDate, newHour);
-
-        saveData();
+        if (getEnterpriseClassByPort(entPort)!=null)
+        {
+            String entName = getEnterpriseClassByPort(entPort).getEntname();
+            this.allEnterprises.get(entName).getEmployees().get(empId)
+                    .getWorkHour().changeDateWorkHour(olderDate, newDate, newHour);
+            saveData();
+        }
     }
 
     // todo : add to one of the fonctionnality of the appManageView (for the employees' pointer view)
-    public void removeWorkHour(String entName, String empId, String date, String hour) throws IOException
+    public void removeWorkHour(String entPort, String empId, String date, String hour) throws IOException
     {
-        this.allEnterprises.get(entName).getEmployees()
-                .get(empId).getWorkHour().removeLocalTime(date, hour);
-        saveData();
+        if (getEnterpriseClassByPort(entPort)!=null)
+        {
+            String entName = getEnterpriseClassByPort(entPort).getEntname();
+            this.allEnterprises.get(entName).getEmployees()
+                    .get(empId).getWorkHour().removeLocalTime(date, hour);
+            saveData();
+        }
+
     }
 
     public Enterprise getEnterpriseClassByPort(String port)
     {
-        Enterprise res = null;
         for(Enterprise ent : this.allEnterprises.values())
         {
             if (ent.getEntPort().equals(port))
@@ -139,6 +160,20 @@ public class DataSerialize {
         }
 
         return null;
+    }
+
+    public void changeEntPort(String entName, String newPort) throws IOException
+    {
+        allEnterprises.get(entName).setEntPort(newPort);
+        saveData();
+    }
+
+    public void changeEntName(String oldName, String newName) throws IOException
+    {
+        allEnterprises.get(oldName).setEntname(newName);
+        allEnterprises.put(newName, allEnterprises.get(oldName));
+        allEnterprises.remove(oldName);
+        saveData();
     }
 
     @Override
@@ -149,5 +184,9 @@ public class DataSerialize {
             res.append(String.format("entName %s -> %s \n", s, allEnterprises.get(s)));
         }
         return res.toString();
+    }
+
+    public void setFileText(String fileText) {
+        this.fileText = fileText;
     }
 }
