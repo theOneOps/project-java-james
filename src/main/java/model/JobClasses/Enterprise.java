@@ -3,6 +3,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+
 public class Enterprise implements Serializable {
 
 
@@ -15,27 +17,16 @@ public class Enterprise implements Serializable {
 
     private String Entname;
     private HashMap<String, Employee> employees = new HashMap<>();
-    private String Entpasswd;
     private String EntPort;
 
     public Enterprise()
     {}
 
-    public void setEntname(String entname) {
-        Entname = entname;
-    }
-
-    public void setEntpasswd(String entpasswd) {
-        Entpasswd = entpasswd;
-    }
-
-    // to create new enterprise
-    public Enterprise(String name, String passwd, String port)
+    public Enterprise(String name, String port)
     {
         if (port.matches("\\d+"))
         {
             this.Entname = name;
-            this.Entpasswd = passwd;
             this.EntPort = port;
         }
     }
@@ -77,27 +68,16 @@ public class Enterprise implements Serializable {
     public ArrayList<String> getAllEmployeesName()
     {
         ArrayList<String> AllEmployeesName = new ArrayList<>();
-        //ArrayList<String> defaultEntreprises = new ArrayList<>(List.of(new String[]{"Entreprise1", "Entreprise2"}));
-//        if (defaultEntreprises.contains(getEntname())) {
-//            AllEmployeesName.add("No employees");
-//        }
-//        else
-//        {
-            if (employees.isEmpty())
-                AllEmployeesName.add("No employees");
-            else
-            {
-                for (String id : employees.keySet())
-                    AllEmployeesName.add(String.format("%s %s (%s) ", employees.get(id).getEmpName(),
-                            employees.get(id).getEmpPrename(), id));
-            }
+        if (employees.isEmpty())
+            AllEmployeesName.add("No employees");
+        else
+        {
+            for (String id : employees.keySet())
+                AllEmployeesName.add(String.format("%s %s (%s) ", employees.get(id).getEmpName(),
+                        employees.get(id).getEmpPrename(), id));
+        }
 
         return AllEmployeesName;
-    }
-
-    public String getEntpasswd()
-    {
-        return Entpasswd;
     }
 
 
@@ -114,5 +94,25 @@ public class Enterprise implements Serializable {
 
     public void setEntPort(String entPort) {
         EntPort = entPort;
+    }
+
+    public void setEntname(String entname) {
+        Entname = entname;
+    }
+
+    // Override equals and hashCode for the test in the test Modules
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Enterprise that = (Enterprise) o;
+        return Objects.equals(Entname, that.getEntname()) &&
+                Objects.equals(EntPort, that.getEntPort()) &&
+                Objects.equals(employees, that.employees);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Entname, EntPort, employees);
     }
 }
