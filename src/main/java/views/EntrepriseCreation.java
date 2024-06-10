@@ -11,7 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import controllers.CreationEntrepriseController;
+import pointeuse.controllers.CreationEntrepriseController;
 
 public class EntrepriseCreation extends Application {
     @Override

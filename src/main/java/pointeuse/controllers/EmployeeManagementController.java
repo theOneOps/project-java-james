@@ -1,8 +1,6 @@
-package controllers;
+package pointeuse.controllers;
 
-import javafx.scene.control.TextField;
 import javafx.scene.control.ComboBox;
-import model.JobClasses.Enterprise;
 
 public class EmployeeManagementController{
     private ComboBox enterpriseComboBox;
@@ -11,6 +9,6 @@ public class EmployeeManagementController{
 
     }
     public openWindowEnterpriseCreation(){
-
+        return null;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.projetpointeuse;
+package pointeuse.views;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -14,16 +14,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.format.DateTimeFormatter;
-
-import javafx.animation.Timeline;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 

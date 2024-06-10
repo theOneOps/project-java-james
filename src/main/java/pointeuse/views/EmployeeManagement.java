@@ -1,4 +1,5 @@
-import javafx.application.Application;
+package pointeuse.views;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -56,7 +57,6 @@ public class EmployeeManagement {
 
 
         QuitButtonClick.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent event) {
                 Stage stage = (Stage) quitButton.getScene().getWindow();
                 stage.close();
@@ -64,13 +64,11 @@ public class EmployeeManagement {
         });
 
         connectButtonCheck.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent event) {
                 controller.connectEmployee();
             }
         });
         createEnterpriseButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
             public void handle(ActionEvent event) {
                 controller.openWindowEnterpriseCreation();
             }

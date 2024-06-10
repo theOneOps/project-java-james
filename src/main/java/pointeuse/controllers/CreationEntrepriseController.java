@@ -1,4 +1,4 @@
-package controllers;
+package pointeuse.controllers;
 
 import javafx.scene.control.TextField;
 import model.JobClasses.Enterprise;
@@ -19,7 +19,7 @@ public class CreationEntrepriseController {
         String ip = ipTextField.getText();
         String port = portTextField.getText();
 
-        Enterprise entreprise = new Enterprise(name, ip, port);
+        Enterprise entreprise = new Enterprise(name, port);
 
         // Here you can add your logic to handle the new enterprise data
         System.out.println("New Enterprise Added:");
