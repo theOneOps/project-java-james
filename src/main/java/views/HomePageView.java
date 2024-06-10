@@ -2,6 +2,7 @@ package views;
 
 import controllers.EntrepriseController;
 import controllers.HomePageController;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -19,10 +20,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.DataSerialize;
 import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -79,9 +82,18 @@ public class HomePageView {
         stackPane.getChildren().add(mainPane);
         //create scene and add stackPane to it
         Scene scene = new Scene(stackPane, 1000d, 700d);
-
         stage.setScene(scene);
         stage.setTitle("HomePage view");
+        //event on quit button, forced save of the data.
+        stage.setOnCloseRequest(e -> {
+            try {
+                DataSerialize.getInstance().saveData();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            Platform.exit();
+        });
+
         sideBar = createSideBar();
         mainContent = createMainContent();
 

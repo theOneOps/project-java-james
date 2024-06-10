@@ -9,9 +9,18 @@ import java.util.HashMap;
 
 
 public class DataSerialize {
-
+    /**
+     * @author Martin
+     * Singleton pattern for Dataserialize for 2 main reasons
+     * First, need to acesses easily this object form everywhere
+     * Second, to avoid loading of hard-drive content on memory each time object is creater
+     */
     private static DataSerialize singleton;
 
+    /**
+     * Use try catch, load can throw errors.
+     * @return singleton
+     */
     public static DataSerialize getInstance() {
         if (singleton == null) {
             singleton = new DataSerialize();
