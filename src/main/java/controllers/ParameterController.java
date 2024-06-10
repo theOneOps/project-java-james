@@ -31,7 +31,7 @@ public class ParameterController {
         try {
             //TODO : add the new enterprise to all the enterprises for reload when user go to homePage view.
             DataSerialize serializer = new DataSerialize();
-            serializer.addNewEnterprise(companyName, port, "0000");
+            //serializer.addNewEnterprise(companyName, port, "0000");
             //create employees
             for (int i = 0; i < nbEmployee; i++) {
                 Employee emp = new Employee(empName + i, empPrename + i, startingHour, endingHour, "dept1");

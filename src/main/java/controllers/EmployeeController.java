@@ -1,22 +1,28 @@
 package controllers;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
 import model.JobClasses.WorkHour;
+import model.DataSerialize;
 
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 
 public class EmployeeController {
     private Enterprise enterprise;
+    private DataSerialize dataSerialize;
     public EmployeeController(Enterprise enterprise) {
         this.enterprise = enterprise;
+        // TODO a modif surment
+        this.dataSerialize = new DataSerialize();
     }
 
     public ObservableList<Employee> getEmployee() {
@@ -33,8 +39,22 @@ public class EmployeeController {
      */
     public String updateEmployee(Enterprise enterprise, Employee emp, String nameVarText, String prenameVarText,
                                   String workHourStartVarText, String workHourEndVarText) {
-        if (checkLocalTimeRegex(workHourStartVarText) && checkLocalTimeRegex(workHourEndVarText)) {
+        if (checkLocalTimeRegex(workHourStartVarText) && checkLocalTimeRegex(workHourEndVarText) &&
+                !Objects.equals(nameVarText, "") && !Objects.equals(prenameVarText, "")) {
+            // Récupérer employee par son uuid
             Employee tmp = enterprise.getEmployees().get(emp.getUuid());
+            String tmpNameEnterprise = enterprise.getEntname();
+            String tmpEmployeeUuid = tmp.getUuid();
+            // Modification employee dans fichier binaire
+            try {
+                dataSerialize.modifyEmpName(tmpNameEnterprise, tmpEmployeeUuid, nameVarText);
+                dataSerialize.modifyEmpPrename(tmpNameEnterprise, tmpEmployeeUuid, prenameVarText);
+                dataSerialize.modifyEmpStartingHour(tmpNameEnterprise, tmpEmployeeUuid, workHourStartVarText);
+                dataSerialize.modifyEmpEndingHour(tmpNameEnterprise, tmpEmployeeUuid, workHourEndVarText);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            // Modification interface
             tmp.setEmpName(nameVarText);
             tmp.setEmpPrename(prenameVarText);
             tmp.setStartingHour(workHourStartVarText);
@@ -52,7 +72,6 @@ public class EmployeeController {
         // Take WorkHour
         WorkHour tmp2 = new WorkHour();
         for(Employee e : employees) {
-            //if(Objects.equals(e.getUuid(), uuid)) {
             if(Objects.equals(e.getUuid(), uuid)) {
                 tmp2 = e.getWorkHour();
             }

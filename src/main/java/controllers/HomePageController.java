@@ -18,11 +18,16 @@ import java.util.*;
  */
 public class HomePageController {
     //Todo : remove class's attributs and use backend load. can't do now because no backend/
+    private DataSerialize ds;
     private ArrayList<Enterprise> enterprises;
     private ObservableList<Employee> employees;
 
     public HomePageController(){
         this.enterprises = new ArrayList<>();
+    }
+    public HomePageController(DataSerialize ds) {
+        this.enterprises = new ArrayList<>();
+        this.ds = ds;
     }
 
     public ArrayList<Enterprise> getEnterprises() {
@@ -42,8 +47,8 @@ public class HomePageController {
      * @return static enterprises
      */
     private ArrayList<Employee> generateEmployees(){
-        DataSerialize ds = new DataSerialize();
-         HashMap<String, Enterprise> enterprise = new HashMap<>();
+        HashMap<String, Enterprise> enterprise = new HashMap<>();
+        /*
         for (int i = 0; i < 3; i++) {
             Enterprise e = new Enterprise();
             for (int j = 0; j < 30; j++) {
@@ -65,7 +70,8 @@ public class HomePageController {
                 }
             }
             enterprise.put(String.valueOf(i), e);
-        }
+        }*/
+        enterprise = ds.getAllEnterprises();
         //TODO : change to backend function instead of static content.
         //HashMap<String, Enterprise> enterprise = ds.getAllEnterprises();
         ArrayList<Employee> recentRegistersEmployee = new ArrayList<>();

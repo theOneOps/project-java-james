@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
+import model.DataSerialize;
 import model.JobClasses.Employee;
 import views.HomePageView;
 
@@ -34,8 +35,22 @@ public class HelloApplication extends Application {
         stage.setMinHeight(700d);
         stage.setResizable(false);
         stage.setTitle("HOME PAGE VIEW");
-        stage.setOnCloseRequest(e -> Platform.exit());
-        HomePageController homePageController = new HomePageController();
+        stage.setOnCloseRequest(e -> {
+            DataSerialize ds = new DataSerialize();
+            try {
+                ds.saveData();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            Platform.exit();
+        });
+        DataSerialize ds = new DataSerialize();
+        try{
+            ds.loadData();
+        }catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        HomePageController homePageController = new HomePageController(ds);
         homePageController.setEmployees();
         //get most recent register employees here to not refresh each time we switch views
         HomePageView homePageView = new HomePageView(stage, homePageController);
