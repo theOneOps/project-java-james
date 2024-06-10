@@ -232,7 +232,7 @@ public class EntrepriseView extends HomePageView {
 
         detailBox.add(reponseLabel, 0, 6, 2, 1);
 
-        detailBox.getChildren().addAll(subTitle, uuid, uuidVarText, name, nameVarText, prename,
+        detailBox.getChildren().addAll(uuid, uuidVarText, name, nameVarText, prename,
                 prenameVarText, workHourStart, workHourStartVarText,
                 workHourEnd, workHourEndVarText, workHourBtn, editBtn);
 
@@ -320,7 +320,6 @@ public class EntrepriseView extends HomePageView {
         VBox.setVgrow(mainBox, Priority.ALWAYS);
         mainBox.getChildren().addAll(topBox, midGrid);
         VBox finalBox = new VBox();
-        finalBox.backgroundProperty().setValue(Background.fill(Color.GREEN));
         finalBox.getChildren().add(mainBox);
 
         switchToView(finalBox);

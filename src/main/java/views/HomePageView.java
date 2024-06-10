@@ -103,9 +103,6 @@ public class HomePageView {
         col1.setHgrow(Priority.ALWAYS);
         col2.setHgrow(Priority.ALWAYS);
 
-        mainPane.backgroundProperty().setValue(Background.fill(Color.GREEN));
-        mainPane.backgroundProperty().setValue(Background.fill(Color.RED));
-
         mainPane.getColumnConstraints().addAll(col1, col2);
 
         //add sideBar on the first column of the grid
@@ -144,7 +141,6 @@ public class HomePageView {
         //margin and padding
         mainBox.setPadding(new Insets(10));
         mainBox.setSpacing(10);
-        mainBox.backgroundProperty().setValue(Background.fill(Color.BLUE));
         return mainBox;
     }
 

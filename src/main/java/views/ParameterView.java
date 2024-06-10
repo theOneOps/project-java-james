@@ -8,7 +8,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -40,7 +39,6 @@ public class ParameterView extends HomePageView {
     public void initializeMainContent() {
 
         VBox vbox = new VBox();
-        vbox.backgroundProperty().setValue(Background.fill(Color.YELLOW));
         Label errorLabel = new Label();
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10, 10, 10, 10));

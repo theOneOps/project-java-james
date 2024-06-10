@@ -4,6 +4,8 @@ import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EmployeeController {
 
@@ -15,7 +17,7 @@ public class EmployeeController {
      */
     public String updateEmployee(Enterprise enterprise, Employee emp, String nameVarText, String prenameVarText,
                                   String workHourStartVarText, String workHourEndVarText) {
-        if (hourValide(workHourStartVarText, ":") && hourValide(workHourEndVarText, ":")) {
+        if (checkLocalTimeRegex(workHourStartVarText) && checkLocalTimeRegex(workHourEndVarText)) {
             Employee tmp = enterprise.getEmployees().get(emp.getUuid());
             tmp.setEmpName(nameVarText);
             tmp.setEmpPrename(prenameVarText);
@@ -33,7 +35,7 @@ public class EmployeeController {
      * si les valeurs de l'heure sont valide
      * (Ex: une heure ne peut être supérieur à 23 (ou 24 ~> 00))
      * @return Boolean : Vrai si l'heure est au bon format Sinon faux
-     */
+     *//*
     public boolean hourValide(String param, String delimitor) {
         String[] time = param.split(delimitor);
         if (time.length != 3) return false;
@@ -42,6 +44,12 @@ public class EmployeeController {
         int minute = Integer.parseInt(time[1]);
         int second = Integer.parseInt(time[2]);
         return (hour <= 23 && minute <= 60 && second <= 60) && (hour >= 0 && minute >= 0 && second >= 0);
+    }*/
+
+    public boolean checkLocalTimeRegex(String regex) {
+        Pattern pattern = Pattern.compile("^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
+        Matcher matcher = pattern.matcher(regex);
+        return matcher.matches();
     }
 
 }
