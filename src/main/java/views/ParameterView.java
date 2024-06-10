@@ -26,8 +26,8 @@ import javax.swing.*;
 public class ParameterView extends HomePageView {
     private final ParameterController parameterController;
 
-    public ParameterView(Stage stage, HomePageController controller) {
-        super(stage, controller);
+    public ParameterView(Stage stage) {
+        super(stage);
         this.parameterController = new ParameterController();
         stage.setTitle("Parameter View");
         initializeMainContent();
@@ -161,12 +161,12 @@ public class ParameterView extends HomePageView {
 
         //Changed events on the sideBar buttons
         paramButton.setOnAction(e -> {
-            HomePageView homePageView = new HomePageView(stage, homePageController);
+            HomePageView homePageView = new HomePageView(stage);
             VBox vBox = homePageView.mainContent;
             homePageView.switchToView(vBox);
         });
         homeButton.setOnAction(e -> {
-            HomePageView homePageView = new HomePageView(stage, homePageController);
+            HomePageView homePageView = new HomePageView(stage);
             VBox vBox = homePageView.mainContent;
             homePageView.switchToView(vBox);
         });

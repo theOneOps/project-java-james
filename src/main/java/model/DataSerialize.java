@@ -10,6 +10,20 @@ import java.util.HashMap;
 
 public class DataSerialize {
 
+    private static DataSerialize singleton;
+
+    public static DataSerialize getInstance() {
+        if (singleton == null) {
+            singleton = new DataSerialize();
+            try {
+                singleton.loadData();
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return singleton;
+    }
+
     private HashMap<String, Enterprise> allEnterprises = new HashMap<>();
     private final String fileText = "data.ser";
 
