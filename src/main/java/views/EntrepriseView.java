@@ -49,7 +49,7 @@ public class EntrepriseView extends HomePageView {
     public EntrepriseView(Stage stage, Enterprise enterprise, HomePageController controller) {
         super(stage, controller);
         this.enterprise = enterprise;
-        this.employeeController = new EmployeeController();
+        this.employeeController = new EmployeeController(enterprise);
         stage.setTitle(enterprise.getEntname() + " View");
 
         // init view
@@ -290,7 +290,7 @@ public class EntrepriseView extends HomePageView {
 
         workHourBtn.setOnAction(e -> {
             if (!popup.isShowing()) {
-                table.getItems().setAll(getWorkHour(uuidVarText.getText()));
+                table.getItems().setAll(employeeController.getWorkHour(uuidVarText.getText()));
                 popup.show(stage);
             }
             else popup.hide();
@@ -307,7 +307,7 @@ public class EntrepriseView extends HomePageView {
                         workHourStartVarText.getText(), workHourEndVarText.getText());
                 reponseLabel.setText(tmp);
                 //Reload table view
-                reloadTableview(getEmployee());
+                reloadTableview();
             }
             else {
                 reponseLabel.setText("Veuillez séléctionner un employé dans le tableau.");
@@ -349,42 +349,11 @@ public class EntrepriseView extends HomePageView {
         });
 
         tableView.getColumns().setAll(nameCol, prenameCol, uuid);
-        tableView.getItems().setAll(getEmployee());
-    }
-    public ObservableList<Employee> getEmployee() {
-        ArrayList<Employee> tmp = new ArrayList<>();
-        for (Map.Entry entry : enterprise.getEmployees().entrySet()) {
-            tmp.add((Employee) entry.getValue());
-        }
-        return FXCollections.observableArrayList(tmp);
+        tableView.getItems().setAll(employeeController.getEmployee());
     }
 
-    public ObservableList getWorkHour(String uuid) {
-        // Take Employees
-        ObservableList<Employee> employees = getEmployee();
-        // Take WorkHour
-        WorkHour tmp2 = new WorkHour();
-        for(Employee e : employees) {
-            //if(Objects.equals(e.getUuid(), uuid)) {
-            if(Objects.equals(e.getUuid(), uuid)) {
-                tmp2 = e.getWorkHour();
-            }
-        }
-
-        ArrayList<ArrayList<LocalTime>> tmp3 = new ArrayList<>();
-        for (Map.Entry wh : tmp2.getPointing().entrySet()) {
-            tmp3.add((ArrayList<LocalTime>) wh.getValue());
-        }
-        // Take Time of pinting
-        ArrayList<LocalTime> pointing = new ArrayList<>();
-        for (ArrayList<LocalTime> localTimes : tmp3) {
-            pointing.addAll(localTimes);
-        }
-        return FXCollections.observableArrayList(pointing);
-    }
-
-    public void reloadTableview(ObservableList emps){
-        tableView.getItems().setAll(getEmployee());
+    public void reloadTableview(){
+        tableView.getItems().setAll(employeeController.getEmployee());
     }
 
 }
