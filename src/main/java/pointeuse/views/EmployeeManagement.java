@@ -5,16 +5,18 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import controllers.EmployeeManagementController;
+import pointeuse.controllers.EmployeeManagementController;
 
-public class EmployeeManagementApp extends Application {
-    @Override
-    public void start(Stage primaryStage) {
+public class EmployeeManagement {
+    private Stage primaryStage;
+    public EmployeeManagement(Stage stage){
+        this.primaryStage= stage;
+    }
+
+    public void content(){
         primaryStage.setTitle("Employee Management App");
 
         GridPane grid = new GridPane();
@@ -39,9 +41,8 @@ public class EmployeeManagementApp extends Application {
         /*PasswordField passwordField = new PasswordField();
         passwordField.getText();
         grid.add(passwordField, 1, 2);*/ //gerer par le controller
-        EmployeeManagementcontroller = new EmployeeManagementController(
-                passwordField,
-                enterpriseComboBox
+        EmployeeManagementController employeeManagementcontroller = new EmployeeManagementController(
+                // enterpriseComboBox
         );
         // Buttons
         Button connectButtonCheck = new Button("Connexion");
@@ -76,15 +77,13 @@ public class EmployeeManagementApp extends Application {
         });
 
 
-        });
-        Scene scene = new Scene(grid, 400, 300);
+    });
+    Scene scene = new Scene(grid, 400, 300);
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
 
-    public static void main(String[] args) {
+}
 
-        launch(args);
-    }
+
 }
 
