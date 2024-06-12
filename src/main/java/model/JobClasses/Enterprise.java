@@ -7,6 +7,11 @@ import java.util.Objects;
 
 public class Enterprise implements Serializable {
 
+
+    public Enterprise(String name){
+        this.Entname = name;
+    }
+
     @Serial
     private static final long serialVersionUID = 1L;
 
