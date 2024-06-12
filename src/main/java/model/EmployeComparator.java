@@ -17,10 +17,11 @@ public class EmployeComparator implements Comparator<Employee> {
      * compares two employees based on their most recent scores.
      * @param o1 the first object to be compared.
      * @param o2 the second object to be compared.
-     * @return -1 : o1 older than o2, 1 : o1 younger than o2, 0 equals.
+     * @return -1 : o1 older than o2, 1 : o1 younger than o2, 0 equals/null.
      */
     @Override
     public int compare(Employee o1, Employee o2) {
+        if(o1.getWorkHour().getLastPointing() == null || o2.getWorkHour().getLastPointing() == null) return 0;
         if(o1.getWorkHour().getLastPointing().isAfter(o2.getWorkHour().getLastPointing())){
             return 1;
         }else if (o1.getWorkHour().getLastPointing().isBefore(o2.getWorkHour().getLastPointing())){

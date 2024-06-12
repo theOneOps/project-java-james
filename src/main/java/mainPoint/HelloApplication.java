@@ -36,9 +36,9 @@ public class HelloApplication extends Application {
         stage.setTitle("HOME PAGE VIEW");
         stage.setOnCloseRequest(e -> Platform.exit());
         HomePageController homePageController = new HomePageController();
-        homePageController.setEmployees();
+        //homePageController.setEmployees();
         //get most recent register employees here to not refresh each time we switch views
-        HomePageView homePageView = new HomePageView(stage, homePageController);
+        HomePageView homePageView = new HomePageView(stage);
     }
 
     public static void main(String[] args) {
