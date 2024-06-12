@@ -9,11 +9,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
-import pointeuse.controllers.EmployeeManagementController;
 import controllers.EmployeeController;
+import javafx.stage.Popup;
 
 /**
  * @author madih
@@ -23,6 +25,7 @@ import controllers.EmployeeController;
 
 public class EmployeeManagement {
     private Stage stage;
+    private Pane mainPane;
     private Button createEnterpriseButton;
     private Button connectButtonCheck;
     private Button QuitButtonClick;
@@ -30,8 +33,7 @@ public class EmployeeManagement {
     private  GridPane grid;
     private Label enterpriseLabel;
     private Enterprise enterprise;
-    private EmployeeController employeeController;
-    private EmployeeManagementController employeeManagementController;
+
 
     public EmployeeManagement(Stage stage){
         this.stage= stage;
@@ -41,8 +43,6 @@ public class EmployeeManagement {
         this.createEnterpriseButton = new Button("Create enterprise");
         this.QuitButtonClick = new Button("Quit");
         this.enterpriseLabel = new Label("Entreprise's name");
-        this.enterprise=enterprise;
-        //this.employeeManagementController = new EmployeeManagementController();
 
     }
 
@@ -65,29 +65,23 @@ public class EmployeeManagement {
         grid.add(QuitButtonClick, 0, 6);
 
 
-        QuitButtonClick.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                Stage stage = (Stage) QuitButtonClick.getScene().getWindow();
-                stage.close();
-            }
+        QuitButtonClick.setOnAction(event -> {
+            Stage stage = (Stage) QuitButtonClick.getScene().getWindow();
+            stage.close();
         });
 
-        connectButtonCheck.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                employeeManagementController.connectEmployee();
-            }
-        });
-
-        createEnterpriseButton.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                employeeManagementController.openWindowEnterpriseCreation();
-            }
-        });
+        connectButtonCheck.setOnAction(event -> connectEmployee());
+        createEnterpriseButton.setOnAction(event -> openWindowEnterpriseCreation());
         Scene scene = new Scene(grid, 400, 300);
         stage.setScene(scene);
         stage.show();
     }
+    public void connectEmployee() {
 
+    }
+    public void openWindowEnterpriseCreation(){
+
+    }
 }
 
 

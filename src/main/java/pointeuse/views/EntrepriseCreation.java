@@ -10,9 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import model.JobClasses.Enterprise;
 
-import pointeuse.controllers.CreationEntrepriseController;
-import controllers.EntrepriseController;
 
 /**
  * @author madih
@@ -32,8 +31,6 @@ public class EntrepriseCreation {
     private Button quitButton;
     private Button createButton;
 
-    private EntrepriseController entrepriseController;
-    private CreationEntrepriseController creationEntrepriseController;
 
     public EntrepriseCreation(Stage stage){
         this.stage = stage;
@@ -66,19 +63,21 @@ public class EntrepriseCreation {
         grid.add(quitButton, 0, 4);
         grid.add(createButton, 1, 4);
 
-        quitButton.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                Stage stage = (Stage) quitButton.getScene().getWindow();
-                stage.close();
-            }
+        quitButton.setOnAction(event -> {
+            Stage stage1 = (Stage) quitButton.getScene().getWindow();
+            stage1.close();
         });
-        createButton.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                creationEntrepriseController.addNewEnterprise();
-            }
-        });
+        createButton.setOnAction(event ->addNewEnterprise());
         Scene scene = new Scene(grid, 400, 300);
         stage.setScene(scene);
         stage.show();
+    }
+    public void addNewEnterprise() {
+        String name = enterpriseNameField.getText();
+        String port = portTextField.getText();
+
+        Enterprise entreprise = new Enterprise(name, port);
+        System.out.println("New Enterprise Added:");
+        System.out.println(entreprise);
     }
 }

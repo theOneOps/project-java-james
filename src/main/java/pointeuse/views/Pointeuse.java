@@ -106,17 +106,13 @@ public class Pointeuse{
         grid.add(QuitButton, 0, 7);
         grid.add(checkInOutButtonClick, 1, 7);
 
-        QuitButton.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                Stage stage = (Stage) QuitButton.getScene().getWindow();
-                stage.close();
-            }
+        QuitButton.setOnAction(event -> {
+            Stage stage1 = (Stage) QuitButton.getScene().getWindow();
+            stage1.close();
         });
-        checkInOutButtonClick.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                Stage stage = (Stage) checkInOutButtonClick.getScene().getWindow();
-                //send au controller....
-            }
+        checkInOutButtonClick.setOnAction(event -> {
+            Stage stage12 = (Stage) checkInOutButtonClick.getScene().getWindow();
+            //send au controller....
         });
 
         Scene scene = new Scene(grid, 400, 300);//might delete later
