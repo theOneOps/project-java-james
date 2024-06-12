@@ -18,11 +18,8 @@ import javafx.collections.ObservableList;
 
 public class EmployeeController {
     private Enterprise enterprise;
-    private DataSerialize dataSerialize;
     public EmployeeController(Enterprise enterprise) {
         this.enterprise = enterprise;
-        // TODO a modif surment
-        this.dataSerialize = new DataSerialize();
     }
 
     public ObservableList<Employee> getEmployee() {
@@ -33,11 +30,40 @@ public class EmployeeController {
         return FXCollections.observableArrayList(tmp);
     }
 
+    public void addEmployee(String nameVarText, String prenameVarText,
+                            String workHourStartVarText, String workHourEndVarText, String derparture) {
+        if (checkLocalTimeRegex(workHourStartVarText) && checkLocalTimeRegex(workHourEndVarText) &&
+                !Objects.equals(nameVarText, "") && !Objects.equals(prenameVarText, "")) {
+            Employee emp = new Employee(nameVarText, prenameVarText, workHourStartVarText, workHourEndVarText,
+                    derparture);
+            try {
+                DataSerialize.getInstance().addNewEmployeeToEnterprise(enterprise.getEntname(), emp);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public boolean removeEmployee(String uuid) {
+        Employee emp = enterprise.getEmployees().get(uuid);
+        if (emp != null) {
+            try {
+                DataSerialize.getInstance().removeEmployeeFromEnterprise(enterprise.getEntname(), emp);
+                return true;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return false;
+    }
+
+    //TODO Verif que 2nd heure de travail soit supp à la première
+
     /**
      * Description: Vérifie si les valeurs des champs sont valide
      * @return
      */
-    public String updateEmployee(Enterprise enterprise, Employee emp, String nameVarText, String prenameVarText,
+    public String updateEmployee(Employee emp, String nameVarText, String prenameVarText,
                                   String workHourStartVarText, String workHourEndVarText) {
         if (checkLocalTimeRegex(workHourStartVarText) && checkLocalTimeRegex(workHourEndVarText) &&
                 !Objects.equals(nameVarText, "") && !Objects.equals(prenameVarText, "")) {
@@ -47,10 +73,10 @@ public class EmployeeController {
             String tmpEmployeeUuid = tmp.getUuid();
             // Modification employee dans fichier binaire
             try {
-                dataSerialize.modifyEmpName(tmpNameEnterprise, tmpEmployeeUuid, nameVarText);
-                dataSerialize.modifyEmpPrename(tmpNameEnterprise, tmpEmployeeUuid, prenameVarText);
-                dataSerialize.modifyEmpStartingHour(tmpNameEnterprise, tmpEmployeeUuid, workHourStartVarText);
-                dataSerialize.modifyEmpEndingHour(tmpNameEnterprise, tmpEmployeeUuid, workHourEndVarText);
+                DataSerialize.getInstance().modifyEmpName(tmpNameEnterprise, tmpEmployeeUuid, nameVarText);
+                DataSerialize.getInstance().modifyEmpPrename(tmpNameEnterprise, tmpEmployeeUuid, prenameVarText);
+                DataSerialize.getInstance().modifyEmpStartingHour(tmpNameEnterprise, tmpEmployeeUuid, workHourStartVarText);
+                DataSerialize.getInstance().modifyEmpEndingHour(tmpNameEnterprise, tmpEmployeeUuid, workHourEndVarText);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

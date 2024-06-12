@@ -173,8 +173,11 @@ public class EntrepriseView extends HomePageView {
         Label reponseLabel = new Label("");
         reponseLabel.setFont(text);
 
+        // Btn manip employee
         Button workHourBtn = new Button("View Work Hour");
         Button editBtn = new Button("Edit");
+        Button addBtn = new Button("Add employee");
+        Button suppBtn = new Button("Remove employee");
 
         // Put Element into Grid
         GridPane.setRowIndex(subTitle, 0);
@@ -233,11 +236,18 @@ public class EntrepriseView extends HomePageView {
         GridPane.setColumnIndex(editBtn, 1);
         GridPane.setHalignment(editBtn, HPos.RIGHT);
 
+        GridPane.setRowIndex(addBtn, 8);
+        GridPane.setColumnIndex(addBtn, 0);
+        GridPane.setHalignment(addBtn, HPos.LEFT);
+        GridPane.setRowIndex(suppBtn, 8);
+        GridPane.setColumnIndex(suppBtn, 1);
+        GridPane.setHalignment(suppBtn, HPos.LEFT);
+
         detailBox.add(reponseLabel, 0, 6, 2, 1);
 
         detailBox.getChildren().addAll(uuid, uuidVarText, name, nameVarText, prename,
                 prenameVarText, workHourStart, workHourStartVarText,
-                workHourEnd, workHourEndVarText, workHourBtn, editBtn);
+                workHourEnd, workHourEndVarText, workHourBtn, editBtn, addBtn, suppBtn);
 
         // Add grid into midBox
         GridPane.setRowIndex(tableView, 0);
@@ -262,6 +272,7 @@ public class EntrepriseView extends HomePageView {
         boxPopup.setStyle(" -fx-background-color: white;");
         boxPopup.setMinWidth(550);
         boxPopup.setMinHeight(250);
+
         // Table view
         TableView<LocalTime> table = new TableView<>();
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
@@ -277,6 +288,69 @@ public class EntrepriseView extends HomePageView {
         Button quitBtn = new Button("Quit");
         boxPopup.getChildren().addAll(table, quitBtn);
         popup.getContent().add(boxPopup);
+
+        /*- Popup Add Employee -*/
+        Popup popupAdd = new Popup();
+        GridPane gridPopupAdd = new GridPane();
+        gridPopupAdd.setStyle(" -fx-background-color: GAINSBORO;");
+        gridPopupAdd.setPadding(new Insets(15, 15, 15, 15));
+        gridPopupAdd.setVgap(8);
+        gridPopupAdd.setHgap(10);
+
+        Label titlePopup = new Label("Create Employee in ".concat(enterprise.getEntname()));
+        titlePopup.setFont(titleFront);
+
+        Label newDepartment = new Label("Department");
+        GridPane.setConstraints(newDepartment, 0, 1);
+        TextField newDepartmentVarText = new TextField();
+        GridPane.setConstraints(newDepartmentVarText, 1, 1);
+        newDepartment.setFont(text);
+        newDepartmentVarText.setFont(text);
+
+        Label newName = new Label("Name");
+        GridPane.setConstraints(newName, 0, 2);
+        TextField newNameVarText = new TextField();
+        GridPane.setConstraints(newNameVarText, 1, 2);
+        newName.setFont(text);
+        newNameVarText.setFont(text);
+        newNameVarText.setMaxWidth(180);
+
+        Label newPrename = new Label("Prename");
+        GridPane.setConstraints(newPrename, 0, 3);
+        TextField newPrenameVarText = new TextField();
+        GridPane.setConstraints(newPrenameVarText, 1, 3);
+        newPrename.setFont(text);
+        newPrenameVarText.setFont(text);
+        newPrenameVarText.setMaxWidth(180);
+
+        Label newWorkHourStart = new Label("Work Hour (Start):");
+        GridPane.setConstraints(newWorkHourStart, 0, 4);
+        workHourStart.setFont(text);
+        TextField newWorkHourStartVarText = new TextField();
+        GridPane.setConstraints(newWorkHourStartVarText, 1, 4);
+        workHourStartVarText.setFont(text);
+        workHourStartVarText.setMaxWidth(180);
+
+        Label response = new Label("Label response");
+
+        Label newWorkHourEnd = new Label("Work Hour (End):");
+        GridPane.setConstraints(newWorkHourEnd, 0, 5);
+        workHourEnd.setFont(text);
+        TextField newWorkHourEndVarText = new TextField();
+        GridPane.setConstraints(newWorkHourEndVarText, 1, 5);
+        workHourEndVarText.setFont(text);
+        workHourEndVarText.setMaxWidth(180);
+
+        Button create = new Button("Create");
+        GridPane.setConstraints(create, 0, 7);
+        GridPane.setConstraints(quitBtn, 2, 7);
+
+        gridPopupAdd.add(response, 0, 6, 2, 1);
+
+        gridPopupAdd.getChildren().addAll(titlePopup, newDepartment, newDepartmentVarText, newName, newNameVarText, newPrename,
+                newPrenameVarText, newWorkHourStart, newWorkHourStartVarText, newWorkHourEnd,
+                newWorkHourEndVarText, create, quitBtn);
+        popupAdd.getContent().add(gridPopupAdd);
 
         /*- Event -*/
         // Event Table View
@@ -300,25 +374,39 @@ public class EntrepriseView extends HomePageView {
         });
 
         quitBtn.setOnAction(e -> {
-            popup.hide();
+            if (popupAdd.isShowing()) popupAdd.hide();
+            if (popup.isShowing()) popup.hide();
+        });
+
+        addBtn.setOnAction(e -> {
+            if (!popupAdd.isShowing()) {
+                popupAdd.show(stage);
+            } else popupAdd.hide();
         });
 
         editBtn.setOnAction(e -> {
             if (!uuidVarText.getText().isEmpty()) {
                 Employee emp = enterprise.getEmployees().get(tableView.getSelectionModel().getSelectedItem().getUuid());
-                String tmp = employeeController.updateEmployee(enterprise, emp, nameVarText.getText(), prenameVarText.getText(),
+                String tmp = employeeController.updateEmployee(emp, nameVarText.getText(), prenameVarText.getText(),
                         workHourStartVarText.getText(), workHourEndVarText.getText());
                 reponseLabel.setText(tmp);
-                if (entrepriseController.updateEmployee(enterprise.getEntname(), uuidVarText.getText(), nameVarText.getText(), prenameVarText.getText(),
-                        workHourStartVarText.getText(), workHourEndVarText.getText())){
-                    reponseLabel.setText("l'update à échoué, veuillez recommencer");
-                }
                 //Reload table view
                 reloadTableview();
             }
             else {
                 reponseLabel.setText("Veuillez séléctionner un employé dans le tableau.");
             }
+        });
+
+        create.setOnAction(e -> {
+            employeeController.addEmployee(newNameVarText.getText(), newPrenameVarText.getText(),
+                    newWorkHourStartVarText.getText(), newWorkHourEndVarText.getText(), "Info");
+            reloadTableview();
+        });
+
+        suppBtn.setOnAction(e -> {
+            boolean res = employeeController.removeEmployee(uuidVarText.getText());
+            reloadTableview();
         });
 
         // Add element into grid
