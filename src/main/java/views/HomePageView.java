@@ -2,6 +2,7 @@ package views;
 
 import controllers.EntrepriseController;
 import controllers.HomePageController;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -19,10 +20,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.DataSerialize;
 import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -48,10 +51,9 @@ public class HomePageView {
     protected TextField searchField;                    //custom search field
     protected HomePageController homePageController;    //controller for home^Page
     private ObservableList<Employee> observableEmployee;//all employees in an observable list to put in the tableView
-    private final EntrepriseController entrepriseController;
+    private ObservableList<Enterprise> observableEnterprise;
 
-
-    public HomePageView(Stage stage, HomePageController homePageController) {
+    public HomePageView(Stage stage) {
         this.stage = stage;
         this.paramButton = new Button();
         this.homeButton = new Button();
@@ -61,9 +63,9 @@ public class HomePageView {
         this.sideBar = new GridPane();
         this.mainContent = new VBox();
         this.searchField = new TextField();
-        this.entrepriseController = new EntrepriseController();
-        this.homePageController = homePageController;
+        this.homePageController = new HomePageController();
         this.observableEmployee = homePageController.getEmployees();
+        this.observableEnterprise = homePageController.getEntreprises();
         for(Employee emp : this.observableEmployee){
             System.out.println(emp);
         }
@@ -80,9 +82,18 @@ public class HomePageView {
         stackPane.getChildren().add(mainPane);
         //create scene and add stackPane to it
         Scene scene = new Scene(stackPane, 1000d, 700d);
-
         stage.setScene(scene);
         stage.setTitle("HomePage view");
+        //event on quit button, forced save of the data.
+        stage.setOnCloseRequest(e -> {
+            try {
+                DataSerialize.getInstance().saveData();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            Platform.exit();
+        });
+
         sideBar = createSideBar();
         mainContent = createMainContent();
 
@@ -102,7 +113,6 @@ public class HomePageView {
         col2.setPercentWidth(85); // 85% of stage
         col1.setHgrow(Priority.ALWAYS);
         col2.setHgrow(Priority.ALWAYS);
-
         mainPane.getColumnConstraints().addAll(col1, col2);
 
         //add sideBar on the first column of the grid
@@ -210,7 +220,7 @@ public class HomePageView {
         this.paramButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
         //on click paramButton to change pane to parameter pane
         paramButton.setOnAction(e -> {
-            ParameterView parameterView = new ParameterView(stage, homePageController);
+            ParameterView parameterView = new ParameterView(stage);
             VBox parameterContent = parameterView.mainContent;
             switchToView(parameterContent);
         });
@@ -290,20 +300,21 @@ public class HomePageView {
      * Fill the combobox with all enterprises and set event
      */
     public void fillComboBox() {
-        ArrayList<Enterprise> enterprises = getAllEnterprises();
-        for(Enterprise ent : enterprises){
+        for(Enterprise ent : observableEnterprise){
             comboBox.getItems().add(ent.getEntname());
         }
-        //set value to first emp name
-        if(!enterprises.isEmpty()) comboBox.setValue(enterprises.getFirst().getEntname());
+
+        if(!observableEnterprise.isEmpty()) {
+            comboBox.setValue("select enterprise");
+        }
 
         //Event on click
         comboBox.setOnAction(e -> {
-            String enterpriseName = (String)comboBox.getValue();
+            String enterpriseName = comboBox.getValue();
             //check all enterprises name in array
-            for(Enterprise ent : enterprises){
+            for(Enterprise ent : observableEnterprise){
                 if(ent.getEntname().equals(enterpriseName)){
-                    EntrepriseView entrepriseView = new EntrepriseView(stage, ent, homePageController);
+                    EntrepriseView entrepriseView = new EntrepriseView(stage, ent);
                     VBox entrepriseContent = entrepriseView.mainContent;
                     switchToView(entrepriseContent);
                     System.out.println("selected enterprise : " + ent);
@@ -312,7 +323,6 @@ public class HomePageView {
             }
 
         });
-
         // create vBox to contain ComboBox
         VBox vBox = new VBox(comboBox);
         vBox.setSpacing(10);
@@ -328,14 +338,14 @@ public class HomePageView {
         //search when enter button pressed
         searchField.setOnAction(event ->{
             String text = searchField.getText();
-            ArrayList<Employee> emps = searchEMployeeByPreName(text);
+            ArrayList<Employee> emps = searchEmployeeByPreName(text, observableEmployee);
             if(! emps.isEmpty()){
                 //first search by preName
                 reloadTableview(emps);
 
             }else{
                 //second search by name
-                emps = searchEmployeeByName(text);
+                emps = searchEmployeeByName(text, observableEmployee);
                 if(!emps.isEmpty()){
                     reloadTableview(emps);
                 }
@@ -343,21 +353,14 @@ public class HomePageView {
         });
         return searchField;
     }
-    /**
-     * Call Controller function to get all enterprises
-     * @return all enterprises
-     */
-    public ArrayList<Enterprise> getAllEnterprises(){
-        return homePageController.getEnterprises();
-    }
 
     /**
      * Call Controller function to search employees by name
      * @param name
      * @return found employees
      */
-    public ArrayList<Employee> searchEmployeeByName(String name){
-        return homePageController.searchEmployeeByName(name);
+    public ArrayList<Employee> searchEmployeeByName(String name, ObservableList<Employee> employees){
+        return homePageController.searchEmployeeByName(name, employees);
     };
 
     /**
@@ -365,8 +368,8 @@ public class HomePageView {
      * @param prename
      * @return found employees
      */
-    public ArrayList<Employee> searchEMployeeByPreName(String prename){
-        return homePageController.searchEmployeeByPreName(prename);
+    public ArrayList<Employee> searchEmployeeByPreName(String prename, ObservableList<Employee> employees){
+        return homePageController.searchEmployeeByPreName(prename, employees);
     }
 
     /**

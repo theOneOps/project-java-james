@@ -40,16 +40,17 @@ import java.util.Objects;
 public class EntrepriseView extends HomePageView {
 
     private Enterprise enterprise;
-    //private ObservableList employees;
+    private EntrepriseController entrepriseController;
     private final EmployeeController employeeController;
 
     private TableView<Employee> tableView;
 
 
-    public EntrepriseView(Stage stage, Enterprise enterprise, HomePageController controller) {
-        super(stage, controller);
+    public EntrepriseView(Stage stage, Enterprise enterprise) {
+        super(stage);
         this.enterprise = enterprise;
         this.employeeController = new EmployeeController(enterprise);
+        this.entrepriseController = new EntrepriseController();
         stage.setTitle(enterprise.getEntname() + " View");
 
         // init view
@@ -57,16 +58,18 @@ public class EntrepriseView extends HomePageView {
         initializeMainContent();
     }
 
+
+
     public void initializeMainContent() {
         //changed events on sidebar's buttons
         comboBox.setValue(enterprise.getEntname());
         paramButton.setOnAction(e -> {
-            ParameterView parameterView = new ParameterView(stage, homePageController);
+            ParameterView parameterView = new ParameterView(stage);
             VBox vBox = parameterView.mainContent;
             switchToView(vBox);
         });
         homeButton.setOnAction(e -> {
-            HomePageView homePageView = new HomePageView(stage, homePageController);
+            HomePageView homePageView = new HomePageView(stage);
             if( homePageController.getEmployees().isEmpty()) System.out.println("vide ");
             VBox vBox = homePageView.mainContent;
             homePageView.switchToView(vBox);
@@ -270,7 +273,6 @@ public class EntrepriseView extends HomePageView {
         });
 
         table.getColumns().setAll(pinting);
-        //table.getItems().setAll(getWorkHour("847933f9-dc97-48fb-aee8-5370effdf5fd"));
 
         Button quitBtn = new Button("Quit");
         boxPopup.getChildren().addAll(table, quitBtn);
@@ -285,6 +287,7 @@ public class EntrepriseView extends HomePageView {
                 uuidVarText.setText(tableView.getSelectionModel().getSelectedItem().getUuid());
                 workHourStartVarText.setText(tableView.getSelectionModel().getSelectedItem().getStartingHour());
                 workHourEndVarText.setText(tableView.getSelectionModel().getSelectedItem().getEndingHour());
+
             }
         });
 
@@ -306,6 +309,10 @@ public class EntrepriseView extends HomePageView {
                 String tmp = employeeController.updateEmployee(enterprise, emp, nameVarText.getText(), prenameVarText.getText(),
                         workHourStartVarText.getText(), workHourEndVarText.getText());
                 reponseLabel.setText(tmp);
+                if (entrepriseController.updateEmployee(enterprise.getEntname(), uuidVarText.getText(), nameVarText.getText(), prenameVarText.getText(),
+                        workHourStartVarText.getText(), workHourEndVarText.getText())){
+                    reponseLabel.setText("l'update à échoué, veuillez recommencer");
+                }
                 //Reload table view
                 reloadTableview();
             }

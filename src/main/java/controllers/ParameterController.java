@@ -1,10 +1,13 @@
 package controllers;
 
+import javafx.animation.PathTransition;
 import model.DataSerialize;
 import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Martin
@@ -32,24 +35,30 @@ public class ParameterController {
             //TODO : add the new enterprise to all the enterprises for reload when user go to homePage view.
             DataSerialize serializer = new DataSerialize();
             //serializer.addNewEnterprise(companyName, port, "0000");
+            //DataSerialize serializer = new DataSerialize();
+            DataSerialize.getInstance().addNewEnterprise(companyName, port, "0000");
             //create employees
             for (int i = 0; i < nbEmployee; i++) {
                 Employee emp = new Employee(empName + i, empPrename + i, startingHour, endingHour, "dept1");
-                serializer.addNewEmployeeToEnterprise(companyName, emp);
+                DataSerialize.getInstance().addNewEmployeeToEnterprise(companyName, emp);
             }
         } catch (Exception e) {
             result = false;
         }
+
+        System.out.println(DataSerialize.getInstance().toString());
         return result;
     }
 
     /**
      * Pattern matching for localTime
-     * @param regex
+     * @param input
      * @return true if matched, else false
      */
-    public boolean checkLocalTimeRegex(String regex) {
-        return regex.equals("^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
+    public boolean checkLocalTimeRegex(String input) {
+        Pattern pattern = Pattern.compile("^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
+        Matcher matcher = pattern.matcher(input);
+        return matcher.matches();
     }
 
 }
