@@ -9,8 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
@@ -25,7 +23,6 @@ import javafx.stage.Popup;
 
 public class EmployeeManagement {
     private Stage stage;
-    private Pane mainPane;
     private Button createEnterpriseButton;
     private Button connectButtonCheck;
     private Button QuitButtonClick;
@@ -33,6 +30,8 @@ public class EmployeeManagement {
     private  GridPane grid;
     private Label enterpriseLabel;
     private Enterprise enterprise;
+    private EntrepriseCreation entrepriseCreation;
+    private Popup popup;
 
 
     public EmployeeManagement(Stage stage){
@@ -43,7 +42,7 @@ public class EmployeeManagement {
         this.createEnterpriseButton = new Button("Create enterprise");
         this.QuitButtonClick = new Button("Quit");
         this.enterpriseLabel = new Label("Entreprise's name");
-
+        this.popup = new Popup();
     }
 
     public void content(){
@@ -72,17 +71,53 @@ public class EmployeeManagement {
 
         connectButtonCheck.setOnAction(event -> connectEmployee());
         createEnterpriseButton.setOnAction(event -> openWindowEnterpriseCreation());
+
         Scene scene = new Scene(grid, 400, 300);
         stage.setScene(scene);
         stage.show();
     }
+
     public void connectEmployee() {
-
+        //open EntrepriseView.
     }
-    public void openWindowEnterpriseCreation(){
 
+    public void openWindowEnterpriseCreation() {
+        if (!popup.isShowing()) {
+            entrepriseCreation.start(new Stage());
+        } else {
+            popup.hide();
+        }
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public ComboBox<String> getEntreprisecomboBox() {
+        return entreprisecomboBox;
+    }
+
+    public Button getConnectButtonCheck() {
+        return connectButtonCheck;
+    }
+
+    public Button getCreateEnterpriseButton() {
+        return createEnterpriseButton;
+    }
+
+    public Button getQuitButtonClick() {
+        return QuitButtonClick;
+    }
+
+    public GridPane getGrid() {
+        return grid;
+    }
+
+    public Label getEnterpriseLabel() {
+        return enterpriseLabel;
     }
 }
+
 
 
 

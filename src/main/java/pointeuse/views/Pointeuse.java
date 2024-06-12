@@ -121,4 +121,67 @@ public class Pointeuse{
     }
 
 
+    public Stage getStage() {
+        return stage;
+    }
+
+    public GridPane getGrid() {
+        return grid;
+    }
+
+    public Label getDate1label() {
+        return date1label;
+    }
+
+    public Label getDate2label() {
+        return date2label;
+    }
+
+    public Label getTimelabel() {
+        return timelabel;
+    }
+
+    public Label getTime2label() {
+        return time2label;
+    }
+
+    public Label getNetworklabel() {
+        return networklabel;
+    }
+
+    public Label getIplabel() {
+        return iplabel;
+    }
+
+    public Label getPortlabel() {
+        return portlabel;
+    }
+
+    public TextField getIpTextField() {
+        return ipTextField;
+    }
+
+    public TextField getPortTextField() {
+        return portTextField;
+    }
+
+    public TextField getIdTextField() {
+        return idTextField;
+    }
+
+    public Button getQuitButton() {
+        return QuitButton;
+    }
+
+    public Button getCheckInOutButtonClick() {
+        return checkInOutButtonClick;
+    }
+
+    public ComboBox<String> getUserComboBox() {
+        return userComboBox;
+    }
+
+    public ComboBox<String> getNetworkComboBox() {
+        return networkComboBox;
+    }
 }

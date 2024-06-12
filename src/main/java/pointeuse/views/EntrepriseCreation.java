@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import model.JobClasses.Enterprise;
 
@@ -30,6 +31,8 @@ public class EntrepriseCreation {
     private TextField enterpriseNameField;
     private Button quitButton;
     private Button createButton;
+    private Popup popup;
+    private Label entreprisecreatedlabel;
 
 
     public EntrepriseCreation(Stage stage){
@@ -43,6 +46,8 @@ public class EntrepriseCreation {
         this.portTextField = new TextField();
         this.ipTextField= new TextField();
         this.enterpriseNameField = new TextField();
+        this.popup =new Popup();
+        this.entreprisecreatedlabel=new Label("New entreprise added.");
 
     }
     public void start(Stage stage) {
@@ -67,7 +72,9 @@ public class EntrepriseCreation {
             Stage stage1 = (Stage) quitButton.getScene().getWindow();
             stage1.close();
         });
+
         createButton.setOnAction(event ->addNewEnterprise());
+
         Scene scene = new Scene(grid, 400, 300);
         stage.setScene(scene);
         stage.show();
@@ -77,7 +84,8 @@ public class EntrepriseCreation {
         String port = portTextField.getText();
 
         Enterprise entreprise = new Enterprise(name, port);
-        System.out.println("New Enterprise Added:");
+        popup.getContent().add(entreprisecreatedlabel);
         System.out.println(entreprise);
     }
+
 }
