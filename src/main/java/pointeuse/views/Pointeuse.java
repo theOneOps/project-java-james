@@ -40,8 +40,6 @@ public class Pointeuse{
     private Enterprise enterprise;
     private Employee employee;
 
-    private EntrepriseController entrepriseController;
-    private  EmployeeController employeeController;
 
     public Pointeuse(Stage stage){
         this.stage = stage;
@@ -61,11 +59,9 @@ public class Pointeuse{
         this.userComboBox=new ComboBox<>();
         this.networkComboBox = new ComboBox<>();
 
-        this.employeeController = new EmployeeController();
-        this.entrepriseController = new EntrepriseController();
     }
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("Pointeuse Application");
+    public void start(Stage stage) {
+        stage.setTitle("Pointeuse Application");
 
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);

@@ -10,7 +10,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
+import model.JobClasses.Employee;
+import model.JobClasses.Enterprise;
 import pointeuse.controllers.EmployeeManagementController;
 import controllers.EmployeeController;
 
@@ -25,22 +26,22 @@ public class EmployeeManagement {
     private Button createEnterpriseButton;
     private Button connectButtonCheck;
     private Button QuitButtonClick;
-    private ComboBox<String> comboBox;
+    private ComboBox<String> entreprisecomboBox;
     private  GridPane grid;
     private Label enterpriseLabel;
-
+    private Enterprise enterprise;
     private EmployeeController employeeController;
     private EmployeeManagementController employeeManagementController;
 
     public EmployeeManagement(Stage stage){
         this.stage= stage;
         this.grid = new GridPane();
-        this.comboBox = new ComboBox<>();
+        this.entreprisecomboBox = new ComboBox<>();
         this.connectButtonCheck = new Button("Connexion");
         this.createEnterpriseButton = new Button("Create enterprise");
         this.QuitButtonClick = new Button("Quit");
         this.enterpriseLabel = new Label("Entreprise's name");
-
+        this.enterprise=enterprise;
         //this.employeeManagementController = new EmployeeManagementController();
 
     }
@@ -56,9 +57,7 @@ public class EmployeeManagement {
 
         grid.add(enterpriseLabel, 0, 1);
 
-        /*ComboBox<String> enterpriseComboBox = new ComboBox<>();
-        enterpriseComboBox.getItems().addAll();
-        grid.add(enterpriseComboBox, 1, 1);*/ //gerer par le controller
+        entreprisecomboBox.setValue(enterprise.getEntname());;
 
         //position Buttons
         grid.add(createEnterpriseButton, 1, 4);
