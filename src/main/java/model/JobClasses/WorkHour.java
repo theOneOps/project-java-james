@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class WorkHour implements Serializable {
 
@@ -30,6 +31,30 @@ public class WorkHour implements Serializable {
             pointing.put(d, refPointing);
         }
     }
+
+    /**
+     * used to obtain the last time an employee registered.
+     * @return time when employee last registered
+     */
+    public LocalTime getLastPointing(){
+        //init at null
+
+        LocalTime result = null;
+
+        //find most recent key in pointing.
+        for (LocalDate key : pointing.keySet()) {
+            //check for each entry if mostRecent is after current
+            //the last LocalTime saved is at the end of the list
+            if(result==null) result = pointing.get(key).getLast();
+
+            //if this key got last localTime after result
+            if(pointing.get(key).getLast().isAfter(result)){
+                result = pointing.get(key).getLast();
+            }
+        }
+        return result;
+    }
+
 
     public HashMap<LocalDate, ArrayList<LocalTime>> getPointing() {
         return pointing;
