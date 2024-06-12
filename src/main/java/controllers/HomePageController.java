@@ -18,31 +18,9 @@ import java.util.function.ObjDoubleConsumer;
  * Connection between the back-end and front-end of the application
  */
 public class HomePageController {
-    //Todo : remove class's attributs and use backend load. can't do now because no backend/
-    private DataSerialize ds;
-    private ArrayList<Enterprise> enterprises;
-    private ObservableList<Employee> employees;
 
     public HomePageController(){
-        this.enterprises = new ArrayList<>();
     }
-    public HomePageController(DataSerialize ds) {
-        this.enterprises = new ArrayList<>();
-        this.ds = ds;
-    }
-
-    public ArrayList<Enterprise> getEnterprises() {
-        return enterprises;
-    }
-
-    public void setEmployees() {
-        this.employees  = FXCollections.observableArrayList(generateEmployees());
-    }
-
-    public ObservableList<Employee> getEmployees() {
-        return employees;
-    }
-
 
     //======================================= new =======================================//
     /**
@@ -50,40 +28,15 @@ public class HomePageController {
      * @return ObservableList of all emp sort by most recent registered date
      * {@link #/model/EmployeeComparator.compare()}
      */
-    private ArrayList<Employee> generateEmployees(){
-        HashMap<String, Enterprise> enterprise = new HashMap<>();
-        /*
-        for (int i = 0; i < 3; i++) {
-            Enterprise e = new Enterprise();
-            for (int j = 0; j < 30; j++) {
-                if(i == 0){
-                    Employee emp = new Employee("nom"+i+j, "prenom"+i+j, "10:15:45", "17:15:45", "dept"+i);
-                    emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.now());
-                    emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.MIN);
-                    emp.getWorkHour().addWorkHour(LocalDate.now(), LocalTime.of(2, 45, 28));
-                    e.addEmployee(emp);
     public ObservableList<Employee> getEmployees() {
         HashMap<String, Enterprise> all = DataSerialize.getInstance().getAllEnterprises();
         ObservableList<Employee> observableEmployees = FXCollections.observableArrayList();
 
         for (Enterprise e : all.values()) {
             //get all employees
-           for(Map.Entry entry : e.getEmployees().entrySet()){
-               observableEmployees.add((Employee) entry.getValue());
+            for(Map.Entry entry : e.getEmployees().entrySet()){
+                observableEmployees.add((Employee) entry.getValue());
             }
-            enterprise.put(String.valueOf(i), e);
-        }*/
-        enterprise = ds.getAllEnterprises();
-        //TODO : change to backend function instead of static content.
-        //HashMap<String, Enterprise> enterprise = ds.getAllEnterprises();
-        ArrayList<Employee> recentRegistersEmployee = new ArrayList<>();
-        int i=0;
-        for(Enterprise e : enterprise.values()){
-            e.setEntname("Entreprise " + i );
-            i++;
-            enterprises.add(e);
-            HashMap<String, Employee> employees = e.getEmployees();
-            recentRegistersEmployee.addAll(employees.values());
         }
         //sort employees inside the observableList by their most recent register date.
         FXCollections.sort(observableEmployees, new EmployeComparator());

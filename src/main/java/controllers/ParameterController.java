@@ -33,10 +33,8 @@ public class ParameterController {
         //surrounded with try catch because model function throws exception.
         try {
             //TODO : add the new enterprise to all the enterprises for reload when user go to homePage view.
-            DataSerialize serializer = new DataSerialize();
-            //serializer.addNewEnterprise(companyName, port, "0000");
-            //DataSerialize serializer = new DataSerialize();
-            DataSerialize.getInstance().addNewEnterprise(companyName, port, "0000");
+            // DataSerialize serializer = new DataSerialize();
+            DataSerialize.getInstance().addNewEnterprise(companyName, port);
             //create employees
             for (int i = 0; i < nbEmployee; i++) {
                 Employee emp = new Employee(empName + i, empPrename + i, startingHour, endingHour, "dept1");
