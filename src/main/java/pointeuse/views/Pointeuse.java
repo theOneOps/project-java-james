@@ -1,10 +1,5 @@
 package pointeuse.views;
 
-import controllers.EmployeeController;
-import controllers.EntrepriseController;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -37,8 +32,6 @@ public class Pointeuse{
     private Button checkInOutButtonClick;
     private ComboBox<String> userComboBox;
     private ComboBox<String> networkComboBox;
-    private Enterprise enterprise;
-    private Employee employee;
 
 
     public Pointeuse(Stage stage){
@@ -106,23 +99,41 @@ public class Pointeuse{
         grid.add(QuitButton, 0, 7);
         grid.add(checkInOutButtonClick, 1, 7);
 
-        QuitButton.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                Stage stage = (Stage) QuitButton.getScene().getWindow();
-                stage.close();
-            }
-        });
-        checkInOutButtonClick.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                Stage stage = (Stage) checkInOutButtonClick.getScene().getWindow();
-                //send au controller....
-            }
-        });
-
         Scene scene = new Scene(grid, 400, 300);//might delete later
         stage.setScene(scene);
         stage.show();
     }
 
 
+    public Button getQuitButton() {
+        return QuitButton;
+    }
+
+    public Button getCheckInOutButtonClick() {
+        return checkInOutButtonClick;
+    }
+
+    public ComboBox<String> getUserComboBox() {
+        return userComboBox;
+    }
+
+    public TextField getIpTextField() {
+        return ipTextField;
+    }
+
+    public TextField getPortTextField() {
+        return portTextField;
+    }
+
+    public TextField getIdTextField() {
+        return idTextField;
+    }
+
+    public Enterprise getEnterprise() {
+        return enterprise;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
 }
