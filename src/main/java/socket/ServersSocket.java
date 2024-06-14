@@ -5,24 +5,26 @@ import model.DataSerialize;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 public class ServersSocket implements Runnable {
     private String serverPort;
     private ArrayList<ConnectionHandler> connections;
-    private DataSerialize data;
     private ServerSocket server;
     private boolean isListening;
     private ExecutorService pool;
 
+
     public ServersSocket(DataSerialize d, String port) {
         serverPort = port;
-        data = d;
         connections = new ArrayList<>();
         isListening = false;
     }
+
 
     @Override
     public void run() {
@@ -32,8 +34,9 @@ public class ServersSocket implements Runnable {
             while (!isListening) {
                 Socket client = server.accept();
                 ObjectOutputStream objOut = new ObjectOutputStream(client.getOutputStream());
-                objOut.writeObject(data.getEnterpriseClassByPort(serverPort));
+                objOut.writeObject(DataSerialize.getInstance().getEnterpriseClassByPort(serverPort));
                 objOut.flush();
+
 
                 ConnectionHandler ch = new ConnectionHandler(client, objOut);
                 connections.add(ch);
@@ -50,6 +53,7 @@ public class ServersSocket implements Runnable {
         }
     }
 
+
     public void shutDown() throws IOException {
         if (!server.isClosed()) {
             server.close();
@@ -57,10 +61,12 @@ public class ServersSocket implements Runnable {
             isListening = true;
         }
 
+
         for (ConnectionHandler ch : connections) {
             ch.shutConnectionDown();
         }
     }
+
 
     class ConnectionHandler implements Runnable {
         private Socket client;
@@ -68,10 +74,12 @@ public class ServersSocket implements Runnable {
         private PrintWriter out;
         private ObjectOutputStream objOut;
 
+
         public ConnectionHandler(Socket client, ObjectOutputStream objOut) {
             this.client = client;
             this.objOut = objOut;
         }
+
 
         @Override
         public void run() {
@@ -80,26 +88,29 @@ public class ServersSocket implements Runnable {
                 in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 String message;
 
+
                 while ((message = in.readLine()) != null) {
                     if (message.equals("ping")) {
                         out.flush();
                         out.println("here");
                     } else if (message.equals("resendEnterprise")) {
-                        objOut.writeObject(data.getEnterpriseClassByPort(serverPort));
+                        objOut.writeObject(DataSerialize.getInstance().getEnterpriseClassByPort(serverPort));
                         objOut.flush();
                     } else {
-                        String[] messageSplit = message.split("\\|");
-                        if (messageSplit.length == 4) {
-                            data.addNewWorkHour(messageSplit[0], messageSplit[1], messageSplit[2], messageSplit[3]);
+                        String[] messageSplit = message.split(";");
+                        if (messageSplit.length == 2) {
+                            System.out.println("test");
+                            DataSerialize.getInstance().addNewWorkHour("80", messageSplit[1], LocalDate.now().toString(),
+                                    messageSplit[0]);
                         }
-
-                        System.out.printf("receive something else from client ! -> %s", message);
+                        System.out.printf("receive something else from client ! -> %s\n", message);
                     }
                 }
             } catch (IOException e) {
                 // todo : handle
             }
         }
+
 
         public void shutConnectionDown() throws IOException {
             if (!client.isClosed()) {

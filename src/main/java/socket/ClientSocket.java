@@ -1,10 +1,12 @@
 package socket;
 
+
 import model.JobClasses.Enterprise;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.CountDownLatch;
+
 
 public class ClientSocket implements Runnable {
     private String ip;
@@ -19,12 +21,14 @@ public class ClientSocket implements Runnable {
     private Thread pings;
     private Thread readerThread;
 
+
     public ClientSocket(String ip, String port, CountDownLatch ilatch) {
         this.ip = ip;
         this.port = Integer.parseInt(port);
         this.latch = ilatch;
         this.serverConnected = false;
     }
+
 
     @Override
     public void run() {
@@ -36,27 +40,33 @@ public class ClientSocket implements Runnable {
         }
     }
 
+
     private void connectToServer() throws IOException, ClassNotFoundException {
         clientSocket = new Socket(ip, port);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
 
+
         // Read the enterprise object after connection
         currentEnt = (Enterprise) input.readObject();
         latch.countDown();
 
+
         this.serverConnected = true;
         this.runningThreadPing = true;
+
 
         // Start the ping thread
         pings = new Thread(this::pingServer);
         pings.start();
 
+
         // Start the reader thread
         readerThread = new Thread(this::readServerMessages);
         readerThread.start();
     }
+
 
     private void pingServer() {
         while (runningThreadPing) {
@@ -72,6 +82,7 @@ public class ClientSocket implements Runnable {
         }
         System.out.println("Ping thread stopping");
     }
+
 
     private void readServerMessages() {
         try {
@@ -89,6 +100,7 @@ public class ClientSocket implements Runnable {
             System.out.println("Server disconnected");
             clientClose();
 
+
             // Attempt to reconnect
             try {
                 connectToServer();
@@ -98,9 +110,11 @@ public class ClientSocket implements Runnable {
         }
     }
 
+
     public boolean isServerConnected() {
         return serverConnected;
     }
+
 
     public void setRunningThreadPingToFalse() {
         this.runningThreadPing = false;
@@ -109,6 +123,7 @@ public class ClientSocket implements Runnable {
             pings.interrupt();
         }
     }
+
 
     public void clientClose() {
         try {
@@ -126,6 +141,7 @@ public class ClientSocket implements Runnable {
         }
     }
 
+
     public void clientSendMessage(String message) {
         if (out != null && serverConnected) {
             out.println(message);
@@ -134,7 +150,8 @@ public class ClientSocket implements Runnable {
         }
     }
 
-    public Enterprise getCorrectEnterprise() {
-        return currentEnt;
-    }
+
+   /*public Enterprise getCorrectEnterprise() {
+       return currentEnt;
+   }*/
 }
