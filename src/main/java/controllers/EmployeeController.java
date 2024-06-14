@@ -8,11 +8,14 @@ import model.DataSerialize;
 import socket.ServersSocket;
 
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
@@ -202,5 +205,14 @@ public class EmployeeController {
        return (hour <= 23 && minute <= 60 && second <= 60) && (hour >= 0 && minute >= 0 && second >= 0);
    }*/
 
+    /**
+     * Copy given UUID to Clipboard
+     * @param uuid
+     */
+    public void copyIdToClipBoard(String uuid) {
+        StringSelection stringSelection = new StringSelection(uuid);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+        System.out.println(stringSelection);
 
+    }
 }

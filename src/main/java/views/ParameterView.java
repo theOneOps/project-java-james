@@ -1,5 +1,6 @@
 package views;
 
+import controllers.EntrepriseController;
 import controllers.HomePageController;
 import controllers.ParameterController;
 import javafx.beans.value.ChangeListener;
@@ -12,8 +13,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Slider;
+import model.JobClasses.Enterprise;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Martin
@@ -139,10 +145,12 @@ public class ParameterView extends HomePageView {
                 System.out.println("ERROR PATTERN MATCHING");
                 errorLabel.setText("Please enter a valid time range. (e.g., 17:00:14) ");
             } else {
-                //Controller function use try catch -> inform the user if bug occurred
-                if (!parameterController.createEnterprise(companyName, companyPort, employeeName, employeePrename, startingHour, endingHour, numberEmployees)) {
+                if (parameterController.createEnterprise(companyName, companyPort, employeeName, employeePrename, startingHour, endingHour, numberEmployees)) {
+                    reloadComboBox();
+                } else {
                     errorLabel.setText("ERROR CREATING EMPLOYEES RETRY");
                 }
+
             }
         });
 
@@ -169,5 +177,23 @@ public class ParameterView extends HomePageView {
         });
     }
 
+    /**
+     * Use to reload comboBox when a new Enterprise is created
+     */
+    public void reloadComboBox() {
+        comboBox.getItems().clear();
+        HashMap<String, Enterprise> enterprises = parameterController.getEnterprises();
+        ArrayList<String> names = new ArrayList<>();
+        for (Enterprise e : enterprises.values()) {
+            names.add(e.getEntname());
+        }
+        //using  comboBox.getItems().addAll(names) to not trigger event setOnAction on comboBox
+        //or else the view is set on the last enterprise added to the combobox
+        comboBox.getItems().addAll(names);
+        //then switch to the homePageviews
+        HomePageView homePageView = new HomePageView(stage);
+        VBox vBox = homePageView.mainContent;
+        homePageView.switchToView(vBox);
+    }
 
 }

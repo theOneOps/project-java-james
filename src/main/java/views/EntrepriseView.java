@@ -178,6 +178,7 @@ public class EntrepriseView extends HomePageView {
         Button editBtn = new Button("Edit");
         Button addBtn = new Button("Add employee");
         Button suppBtn = new Button("Remove employee");
+        Button cpyBtn = new Button("Copy UUID");
 
         // Put Element into Grid
         GridPane.setRowIndex(subTitle, 0);
@@ -243,11 +244,15 @@ public class EntrepriseView extends HomePageView {
         GridPane.setColumnIndex(suppBtn, 1);
         GridPane.setHalignment(suppBtn, HPos.LEFT);
 
+        GridPane.setRowIndex(cpyBtn, 8);
+        GridPane.setColumnIndex(cpyBtn, 1);
+        GridPane.setHalignment(cpyBtn, HPos.RIGHT);
+
         detailBox.add(reponseLabel, 0, 6, 2, 1);
 
         detailBox.getChildren().addAll(uuid, uuidVarText, name, nameVarText, prename,
                 prenameVarText, workHourStart, workHourStartVarText,
-                workHourEnd, workHourEndVarText, workHourBtn, editBtn, addBtn, suppBtn);
+                workHourEnd, workHourEndVarText, workHourBtn, editBtn, addBtn, suppBtn, cpyBtn);
 
         // Add grid into midBox
         GridPane.setRowIndex(tableView, 0);
@@ -343,13 +348,13 @@ public class EntrepriseView extends HomePageView {
 
         Button create = new Button("Create");
         GridPane.setConstraints(create, 0, 7);
-        GridPane.setConstraints(quitBtn, 2, 7);
+        //GridPane.setConstraints(quitBtn, 2, 7);
 
         gridPopupAdd.add(response, 0, 6, 2, 1);
 
         gridPopupAdd.getChildren().addAll(titlePopup, newDepartment, newDepartmentVarText, newName, newNameVarText, newPrename,
                 newPrenameVarText, newWorkHourStart, newWorkHourStartVarText, newWorkHourEnd,
-                newWorkHourEndVarText, create, quitBtn);
+                newWorkHourEndVarText, create);
         popupAdd.getContent().add(gridPopupAdd);
 
         /*- Event -*/
@@ -409,6 +414,9 @@ public class EntrepriseView extends HomePageView {
             reloadTableview();
         });
 
+        cpyBtn.setOnAction(e ->{
+            employeeController.copyIdToClipBoard(uuidVarText.getText());
+        });
         // Add element into grid
         VBox mainBox = new VBox();
         mainBox.setMaxHeight(Double.MAX_VALUE);

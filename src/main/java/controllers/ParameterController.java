@@ -1,11 +1,10 @@
 package controllers;
 
-import javafx.animation.PathTransition;
 import model.DataSerialize;
 import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +31,6 @@ public class ParameterController {
         boolean result = true;
         //surrounded with try catch because model function throws exception.
         try {
-            //TODO : add the new enterprise to all the enterprises for reload when user go to homePage view.
-            // DataSerialize serializer = new DataSerialize();
             DataSerialize.getInstance().addNewEnterprise(companyName, port);
             //create employees
             for (int i = 0; i < nbEmployee; i++) {
@@ -59,4 +56,12 @@ public class ParameterController {
         return matcher.matches();
     }
 
+    /**
+     * Get all enterprises from DataSerialize instance
+     *
+     * @return
+     */
+    public HashMap<String, Enterprise> getEnterprises() {
+        return DataSerialize.getInstance().getAllEnterprises();
+    }
 }

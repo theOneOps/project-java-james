@@ -1,6 +1,7 @@
 package controllers;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import model.DataSerialize;
 import model.EmployeComparator;
@@ -8,6 +9,7 @@ import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.function.ObjDoubleConsumer;
@@ -77,6 +79,17 @@ public class HomePageController {
         }
         return result;
 
+    }
+
+    public ObservableList<Employee> todaysEmployees(ObservableList<Employee> employees){
+        ObservableList<Employee> result = FXCollections.observableArrayList();
+        LocalDate today = LocalDate.now();
+        for(Employee e : employees){
+            LocalDateTime compareDate = LocalDateTime.of(today, e.getWorkHour().getLastPointing());
+            LocalDateTime midNight = today.atStartOfDay();
+            if(compareDate.isAfter(midNight)) result.add(e);
+        }
+        return result;
     }
 
 }

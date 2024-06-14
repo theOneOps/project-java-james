@@ -50,6 +50,7 @@ public class HomePageView {
     protected VBox mainContent;                         //custom mainContent
     protected TextField searchField;                    //custom search field
     protected HomePageController homePageController;    //controller for home^Page
+    protected CheckBox dayOnly;                         //checkbox to see today's registers
     private ObservableList<Employee> observableEmployee;//all employees in an observable list to put in the tableView
     private ObservableList<Enterprise> observableEnterprise;
 
@@ -63,6 +64,7 @@ public class HomePageView {
         this.sideBar = new GridPane();
         this.mainContent = new VBox();
         this.searchField = new TextField();
+        this.dayOnly = new CheckBox();
         this.homePageController = new HomePageController();
         this.observableEmployee = homePageController.getEmployees();
         this.observableEnterprise = homePageController.getEntreprises();
@@ -146,7 +148,8 @@ public class HomePageView {
 
         createSearchField();
         initializeTableView();
-        mainBox.getChildren().addAll(searchField, tableView);
+        HBox dayBox = createDaysBox();
+        mainBox.getChildren().addAll(searchField,dayBox, tableView);
 
         //margin and padding
         mainBox.setPadding(new Insets(10));
@@ -334,6 +337,7 @@ public class HomePageView {
      */
     public TextField createSearchField(){
         searchField.setPromptText("search emp by name/prename");
+        searchField.setMaxWidth(400);
         //event
         //search when enter button pressed
         searchField.setOnAction(event ->{
@@ -378,6 +382,23 @@ public class HomePageView {
      */
     public void reloadTableview(ArrayList<Employee>emps){
         tableView.setItems( FXCollections.observableArrayList(emps));
+    }
+
+    public HBox createDaysBox(){
+        Label dayLabel = new Label("Today's registers only");
+        HBox dayBox = new HBox();
+        dayBox.getChildren().addAll(dayOnly, dayLabel);
+
+        dayOnly.setOnDragDetected(e ->{
+            if(dayOnly.isSelected()){
+                reloadTableview((ArrayList<Employee>)homePageController.todaysEmployees(observableEmployee));
+            }else {
+                reloadTableview((ArrayList<Employee>) observableEmployee);
+            }
+        });
+
+
+        return dayBox;
     }
 }
 
