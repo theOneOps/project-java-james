@@ -51,6 +51,7 @@ public class HomePageView {
     protected VBox mainContent;                         //custom mainContent
     protected TextField searchField;                    //custom search field
     protected HomePageController homePageController;    //controller for home^Page
+    private EmployeeController employeeController;
     protected CheckBox dayOnly;                         //checkbox to see today's registers
     private ObservableList<Employee> observableEmployee;//all employees in an observable list to put in the tableView
     private ObservableList<Enterprise> observableEnterprise;
@@ -316,9 +317,10 @@ public class HomePageView {
         comboBox.setOnAction(e -> {
             String enterpriseName = comboBox.getValue();
             //check all enterprises name in array
-            for(Enterprise ent : observableEnterprise){
-                if(ent.getEntname().equals(enterpriseName)){
+            for(Enterprise ent : observableEnterprise) {
+                if(ent.getEntname().equals(enterpriseName)) {
                     EntrepriseView entrepriseView = new EntrepriseView(stage, ent);
+                    this.employeeController = entrepriseView.getEmployeeController();
                     VBox entrepriseContent = entrepriseView.mainContent;
                     switchToView(entrepriseContent);
                     System.out.println("selected enterprise : " + ent);
@@ -397,8 +399,15 @@ public class HomePageView {
             }
         });
 
-
         return dayBox;
     }
+
+    public void closeConnection() {
+        if (employeeController != null) {
+            System.out.println("test10");
+            employeeController.closeConnectionSocket();
+        }
+    }
+
 }
 

@@ -24,7 +24,6 @@ public class PointerController {
     private Thread clientThread;
     private boolean connectedFirstTime;
     private CountDownLatch latch;
-    private DataNotSendSerialized ds;
 
     private String ip;
     private String port;
@@ -36,7 +35,6 @@ public class PointerController {
     public PointerController() {
         this.ip = "127.0.0.1";
         this.port = "80";
-        this.ds = new DataNotSendSerialized();
         // Init co
         this.latch = new CountDownLatch(1);
         //TODO config ip et port de la pointeuse
@@ -159,11 +157,11 @@ public class PointerController {
         } else {
             // On séréaise
             System.out.println("Serealize");
-            ArrayList<String> tmp = ds.loadData();
+            ArrayList<String> tmp = DataNotSendSerialized.getInstance().loadData();
             tmp.add(data);
-            ds.saveData(tmp);
+            DataNotSendSerialized.getInstance().saveData(tmp);
             // TEST print
-            ds.printData();
+            //DataNotSendSerialized.getInstance().printData();
         }
     }
 

@@ -472,6 +472,10 @@ public class EntrepriseView extends HomePageView {
         tableView.getItems().setAll(employeeController.getEmployee());
     }
 
+    public EmployeeController getEmployeeController() {
+        return employeeController;
+    }
+
     /**
      * Closes the connection to the employee controller's socket.
      * This method ensures that any resources used by the employee controller are properly released.

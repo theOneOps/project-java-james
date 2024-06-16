@@ -23,7 +23,7 @@ import java.util.function.ObjDoubleConsumer;
  */
 public class HomePageController {
 
-    public HomePageController(){
+    public HomePageController() {
     }
 
     //======================================= new =======================================//
@@ -47,7 +47,7 @@ public class HomePageController {
         return observableEmployees;
     }
 
-    public ObservableList<Enterprise> getEntreprises(){
+    public ObservableList<Enterprise> getEntreprises() {
         HashMap<String, Enterprise> all = DataSerialize.getInstance().getAllEnterprises();
         ObservableList<Enterprise> observableEnterprises = FXCollections.observableArrayList();
         for (Map.Entry entry : all.entrySet()) {
@@ -83,6 +83,11 @@ public class HomePageController {
 
     }
 
+    /**
+     * Get last pointing of all employees
+     * @param employees list of employees
+     * @return result
+     */
     public ObservableList<Employee> todaysEmployees(ObservableList<Employee> employees){
         ObservableList<Employee> result = FXCollections.observableArrayList();
         LocalDate today = LocalDate.now();

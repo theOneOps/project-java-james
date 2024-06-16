@@ -47,21 +47,17 @@ public class EmployeeController {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-       /*
+        System.out.println("test1");
        if (serverThread != null && serverThread.isAlive() && serversSocket != null) {
-       */if (serversSocket != null) {
-            System.out.println("test1");
-            try {
-                System.out.println("test2");
-                serversSocket.shutDown();
-                if (serverThread != null) {
-                    System.out.println("test3");
-                    serverThread.interrupt();
-                }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+           try {
+               System.out.println("test2");
+               serversSocket.shutDown();
+               System.out.println("test3");
+               serverThread.interrupt();
+           } catch (IOException ex) {
+               throw new RuntimeException(ex);
+           }
+       }
     }
 
     /**

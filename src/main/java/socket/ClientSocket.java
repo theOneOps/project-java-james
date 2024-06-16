@@ -25,7 +25,6 @@ public class ClientSocket implements Runnable {
     private Thread pings;
     private Thread readerThread;
     private ArrayList<String> data;
-    private DataNotSendSerialized ds;
     private boolean dataSend;
 
     /**
@@ -42,7 +41,6 @@ public class ClientSocket implements Runnable {
         this.serverConnected = false;
         // Handle data not send
         this.dataSend = false;
-        this.ds = new DataNotSendSerialized();
     }
 
     /**
@@ -112,14 +110,14 @@ public class ClientSocket implements Runnable {
             String serverMessage;
             // Si on est connecté pour la première fois on envoie toutes les données
             if (serverConnected && !dataSend) {
-                data = ds.loadData();
+                data = DataNotSendSerialized.getInstance().loadData();
                 for (String entry : data) {
                     System.out.println("E: ".concat(entry));
                     clientSendMessage(entry);
                 }
                 dataSend = true;
                 // Tout supprimer du fichier .ser
-                ds.deleteData();
+                DataNotSendSerialized.getInstance().deleteData();
             }
             while (serverConnected && (serverMessage = in.readLine()) != null) {
                 System.out.printf("Server message: %s\n", serverMessage);
