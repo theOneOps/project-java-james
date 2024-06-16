@@ -42,8 +42,7 @@ public class PointerMain extends Application {
     public void start(Stage primaryStage) throws IOException, ClassNotFoundException, InterruptedException {
         PointerController pointerController = new PointerController();
         // Initialize the pointer view
-        Pointer pointer = new Pointer(pointerController);
-
+        Pointer pointer = new Pointer(primaryStage, pointerController);
 
         // Create a scene with a specific width and height
         Scene scene = new Scene(pointer, 450, 200);

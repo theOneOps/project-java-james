@@ -1,5 +1,6 @@
 package views;
 
+import controllers.EmployeeController;
 import controllers.EntrepriseController;
 import controllers.HomePageController;
 import javafx.application.Platform;
@@ -324,7 +325,6 @@ public class HomePageView {
                     break;
                 }
             }
-
         });
         // create vBox to contain ComboBox
         VBox vBox = new VBox(comboBox);

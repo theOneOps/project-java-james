@@ -25,4 +25,31 @@ public class DataNotSendSerialized {
         ObjectInputStream in = new ObjectInputStream(fileIn);
         return (ArrayList<String>) in.readObject();
     }
+
+    public boolean deleteData() {
+        File file = new File(fileText);
+        if (!file.exists()) {
+            System.out.println("Delete Data");
+            return file.delete();
+        }
+        return false;
+    }
+
+    public void printData() {
+        File file = new File(fileText);
+        if (file.exists()) {
+            try {
+                ArrayList<String> tmp = loadData();
+                System.out.println("Print Data Serialize");
+                for (String s : tmp ) {
+                    System.out.println(s);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }
 }

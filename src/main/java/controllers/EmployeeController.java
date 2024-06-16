@@ -22,22 +22,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 
-
-
 public class EmployeeController {
     private Enterprise enterprise;
     private ServersSocket serversSocket;
     private Thread serverThread;
 
-
     /** Constructeur */
     public EmployeeController(Enterprise enterprise) {
         this.enterprise = enterprise;
-        this.serversSocket = new ServersSocket(DataSerialize.getInstance(), "80");
+        this.serversSocket = new ServersSocket(enterprise.getEntPort());
         this.serverThread = new Thread(serversSocket);
         this.serverThread.start();
     }
-
 
     /**
      * closeConnectionSocket
@@ -54,14 +50,19 @@ public class EmployeeController {
        /*
        if (serverThread != null && serverThread.isAlive() && serversSocket != null) {
        */if (serversSocket != null) {
+            System.out.println("test1");
             try {
+                System.out.println("test2");
                 serversSocket.shutDown();
+                if (serverThread != null) {
+                    System.out.println("test3");
+                    serverThread.interrupt();
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         }
     }
-
 
     /**
      * getEmployee
@@ -151,7 +152,11 @@ public class EmployeeController {
         }
     }
 
-
+    /**
+     * Description: Take work hours with uuid of a specific employee inside the currently enterprise
+     * @param uuid the identifier of an employee
+     * @return ObservableList<LocalTime>
+     */
     public ObservableList getWorkHour(String uuid) {
         // Take Employees
         ObservableList<Employee> employees = getEmployee();
@@ -159,7 +164,6 @@ public class EmployeeController {
         WorkHour tmp2 = new WorkHour();
         for(Employee e : employees) {
             if(Objects.equals(e.getUuid(), uuid)) {
-                System.out.println("TEST0");
                 tmp2 = e.getWorkHour();
             }
         }
@@ -167,16 +171,13 @@ public class EmployeeController {
 
         ArrayList<ArrayList<LocalTime>> tmp3 = new ArrayList<>();
         for (Map.Entry wh : tmp2.getPointing().entrySet()) {
-            System.out.println("TEST1");
             tmp3.add((ArrayList<LocalTime>) wh.getValue());
         }
         // Take Time of pinting
         ArrayList<LocalTime> pointing = new ArrayList<>();
         for (ArrayList<LocalTime> localTimes : tmp3) {
-            System.out.println("TEST2");
             pointing.addAll(localTimes);
         }
-        System.out.println("TEST3");
         return FXCollections.observableArrayList(pointing);
     }
 
@@ -193,7 +194,7 @@ public class EmployeeController {
      * si les valeurs de l'heure sont valide
      * (Ex: une heure ne peut être supérieur à 23 (ou 24 ~> 00))
      * @return Boolean : Vrai si l'heure est au bon format Sinon faux
-     *//*
+     */
    public boolean hourValide(String param, String delimitor) {
        String[] time = param.split(delimitor);
        if (time.length != 3) return false;
@@ -203,7 +204,7 @@ public class EmployeeController {
        int minute = Integer.parseInt(time[1]);
        int second = Integer.parseInt(time[2]);
        return (hour <= 23 && minute <= 60 && second <= 60) && (hour >= 0 && minute >= 0 && second >= 0);
-   }*/
+   }
 
     /**
      * Copy given UUID to Clipboard
@@ -213,6 +214,5 @@ public class EmployeeController {
         StringSelection stringSelection = new StringSelection(uuid);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
         System.out.println(stringSelection);
-
     }
 }

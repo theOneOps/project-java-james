@@ -42,10 +42,14 @@ public class EntrepriseView extends HomePageView {
     private Enterprise enterprise;
     private EntrepriseController entrepriseController;
     private final EmployeeController employeeController;
-
     private TableView<Employee> tableView;
 
-
+    /**
+     * Constructor for EntrepriseView.
+     *
+     * @param stage     The stage for displaying the view.
+     * @param enterprise The enterprise to be displayed.
+     */
     public EntrepriseView(Stage stage, Enterprise enterprise) {
         super(stage);
         this.enterprise = enterprise;
@@ -58,8 +62,9 @@ public class EntrepriseView extends HomePageView {
         initializeMainContent();
     }
 
-
-
+    /**
+     * Initialize the main content of the view.
+     */
     public void initializeMainContent() {
         //changed events on sidebar's buttons
         comboBox.setValue(enterprise.getEntname());
@@ -428,6 +433,10 @@ public class EntrepriseView extends HomePageView {
         switchToView(finalBox);
     }
 
+    /**
+     * Initializes the TableView with employee data.
+     * Sets up the columns for name, prename, and UUID, and populates the table with employees.
+     */
     public void initializeTableView() {
         // TableView
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
@@ -455,8 +464,20 @@ public class EntrepriseView extends HomePageView {
         tableView.getItems().setAll(employeeController.getEmployee());
     }
 
+    /**
+     * Reloads the TableView with updated employee data.
+     * This method refreshes the TableView content to reflect the latest data.
+     */
     public void reloadTableview(){
         tableView.getItems().setAll(employeeController.getEmployee());
+    }
+
+    /**
+     * Closes the connection to the employee controller's socket.
+     * This method ensures that any resources used by the employee controller are properly released.
+     */
+    public void closeConnection() {
+        employeeController.closeConnectionSocket();
     }
 
 }

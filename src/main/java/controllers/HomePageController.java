@@ -7,7 +7,9 @@ import model.DataSerialize;
 import model.EmployeComparator;
 import model.JobClasses.Employee;
 import model.JobClasses.Enterprise;
+import socket.ServersSocket;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

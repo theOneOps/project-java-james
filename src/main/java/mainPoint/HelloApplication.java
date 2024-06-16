@@ -6,6 +6,7 @@ import javafx.application.Platform;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
+import javafx.stage.WindowEvent;
 import model.DataSerialize;
 import model.JobClasses.Employee;
 import views.HomePageView;
@@ -35,26 +37,29 @@ public class HelloApplication extends Application {
         stage.setMinHeight(700d);
         stage.setResizable(false);
         stage.setTitle("HOME PAGE VIEW");
-        stage.setOnCloseRequest(e -> {
-            DataSerialize ds = new DataSerialize();
-            try {
-                ds.saveData();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            Platform.exit();
-        });
+        // Controller HomePage
+        HomePageController homePageController = new HomePageController();
+        // Event close stage
+
         DataSerialize ds = new DataSerialize();
         try{
             ds.loadData();
         }catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-        stage.setOnCloseRequest(e -> Platform.exit());
-        HomePageController homePageController = new HomePageController();
         //homePageController.setEmployees();
         //get most recent register employees here to not refresh each time we switch views
         HomePageView homePageView = new HomePageView(stage);
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+                try {
+                    Platform.exit();
+                    DataSerialize.getInstance().saveData();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
     public static void main(String[] args) {

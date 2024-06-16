@@ -3,17 +3,23 @@ package views;
 
 import controllers.PointerController;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 //import pointeuse.model.ParameterSerialize;
 
 
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.Objects;
 
 
 /**
@@ -32,40 +38,72 @@ public class Pointer extends VBox {
     private Button Quit;                    // Button to quit the application
     private PointerController pointerController;
 
+    private String port;
+    private String ip;
+    private TextField uuid;
+    private Stage primaryStage;
 
     /**
      * Constructor for the Pointer class.
+     * Initializes the UI components and sets up event handlers.
+     *
+     * @param primaryStage the primary stage of the JavaFX application.
+     * @param pointerController the controller for managing pointer operations.
      */
-    public Pointer(PointerController pointerController) {
+    public Pointer(Stage primaryStage, PointerController pointerController) {
         super();
+        this.primaryStage = primaryStage;
+        this.port = "80";
+        this.ip = "127.0.0.1";
         HBox buttons = new HBox();
         // Initialize the pointer controller
         this.pointerController = pointerController;
 
-
-        // Create a combo box with all employees of ent e1
+        //Create a combo box with all employees of ent e1
         //ComboBox combo_box = new ComboBox(pointerController.getEmployee());
+        Label currentlyTimeArround = new Label();
+        currentlyTimeArround.setText("Heure actuel arroundit au quart d'heure près: ".
+                concat(pointerController.roundTime(LocalTime.now())));
+        this.uuid = new TextField();
+        this.uuid.setPromptText("Entrez l'uuid de l'employee");
 
-
+        Button config = new Button("Config");
         Button checkBtn = new Button("Check");
-        Quit = new Button("Quit");
-
 
         Region spacerTwo = new Region();
         HBox.setHgrow(spacerTwo, Priority.ALWAYS);
-        buttons.getChildren().addAll(Quit, spacerTwo, checkBtn);
+        buttons.getChildren().addAll(config, spacerTwo, checkBtn);
 
 
         Region spacerThree = new Region();
         VBox.setVgrow(spacerThree, Priority.ALWAYS);
 
+        /*- Popup Config -*/
+        Popup popup = new Popup();
+        VBox boxPopup = new VBox(6);
+        boxPopup.setAlignment(Pos.CENTER);
+        boxPopup.setStyle(" -fx-background-color: white;");
+        boxPopup.setMinWidth(550);
+        boxPopup.setMinHeight(250);
 
-        this.getChildren().addAll(spacerThree, buttons);
+        HBox boxBtn = new HBox(6);
 
+        TextField portField = new TextField();
+        portField.setPromptText("Port, ex: 80");
+        TextField ipField = new TextField();
+        ipField.setPromptText("Ip, ex: 127.0.0.1");
+
+        Button cancel = new Button("Cancel");
+        Button valid = new Button("Ok");
+
+        boxBtn.getChildren().addAll(cancel, valid);
+        boxPopup.getChildren().addAll(portField, ipField, boxBtn);
+        popup.getContent().add(boxPopup);
+
+        this.getChildren().addAll(currentlyTimeArround, uuid, spacerThree, buttons);
 
         this.setPadding(new Insets(10));
         this.setSpacing(10);
-
 
         /*- Event -*/
         checkBtn.setOnAction(e -> {
@@ -73,14 +111,29 @@ public class Pointer extends VBox {
             //ObservableList<Employee> emp = pointerController.getEmployee();
             //int index = combo_box.getSelectionModel().getSelectedIndex();
             try {
+                System.out.println(port.concat(ip));
                 pointerController.sendPendingData(pointerController.roundTime(LocalTime.now()).concat(";")
-                        .concat("1"));
+                        .concat(getUuid()).concat(";").concat(port).concat(";").concat(ip));
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             } catch (ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
         });
+
+        config.setOnAction(e -> {
+           if (!popup.isShowing()) popup.show(primaryStage);
+        });
+
+        valid.setOnAction(e -> {
+            port = portField.getText();
+            ip = ipField.getText();
+            if (Objects.equals(port, "")) port = "80";
+            if (Objects.equals(ip, "")) ip = "127.0.0.1";
+            pointerController.setSocket(ip, port);
+            popup.hide();
+        });
+        cancel.setOnAction(e -> { popup.hide(); });
     }
 
 
@@ -93,31 +146,15 @@ public class Pointer extends VBox {
         return Quit;
     }
 
-
     /**
-     * Saves the new configuration pointer settings.
+     * Gets the UUID entered by the user.
      *
-     * @throws IOException if there is an issue with IO operations
-     *
-    public void saveNewConfigPointer() throws IOException {
-    // Update the new IP and port values from the configuration input fields
-    config.getNewIp().setLTFTextFieldValue(config.getNewIp().getLTFTextFieldValue());
-    config.getNewPort().setLTFTextFieldValue(config.getNewPort().getLTFTextFieldValue());
-
-
-    ParameterSerialize p = new ParameterSerialize();
-
-
-    // Collect the new parameters
-    ArrayList<String> newParams = new ArrayList<>();
-    newParams.add(config.getNewIp().getLTFTextFieldValue());
-    newParams.add(config.getNewPort().getLTFTextFieldValue());
-
-
-    // Save the new parameters
-    p.saveData(newParams);
+     * @return the UUID entered in the TextField.
+     */
+    public String getUuid() {
+        return uuid.getText();
     }
-    /
+
     /**
      * Displays an alert with the specified title and content.
      *
